@@ -1,0 +1,25 @@
+{
+  "name": "scheduled_tasks",
+  "version": "1.0.0",
+  "description": "AI cron jobs, like perplexity scheduled tasks, with web search and memories",
+  "scripts": {
+    "knip": "knip",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "husky": "^9.1.7",
+    "knip": "^6.11.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.1"
+  }
+}

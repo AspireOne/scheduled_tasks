@@ -1,0 +1,19 @@
+pnpm lint &
+lint_pid=$!
+
+pnpm knip &
+knip_pid=$!
+
+pnpm typecheck &
+typecheck_pid=$!
+
+wait "$lint_pid"
+lint_status=$?
+
+wait "$knip_pid"
+knip_status=$?
+
+wait "$typecheck_pid"
+typecheck_status=$?
+
+[ "$lint_status" -eq 0 ] && [ "$knip_status" -eq 0 ] && [ "$typecheck_status" -eq 0 ]
