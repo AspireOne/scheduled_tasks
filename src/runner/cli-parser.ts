@@ -9,7 +9,10 @@ export function parseCliArgs(args: string[]) {
     allowPositionals: true,
   });
 
-  return { values, positionals };
+  return {
+    taskPath: values["task-path"],
+    positionals,
+  };
 }
 
 export type CliArgs = ReturnType<typeof parseCliArgs>;

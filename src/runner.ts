@@ -1,34 +1,17 @@
-// The universal runner that will take in a task definition and run it.
-
-import { readFileSync } from "node:fs";
-import { parse } from "smol-toml";
 import { parseCliArgs } from "./runner/cli-parser";
 import { logger } from "./shared/logger";
-import { formatResult } from "./shared/utils";
-import { validateTask, type Task } from "./task";
+import { loadTaskFromFile } from "./task";
 
-const log = logger.withContext("Runner");
+const log = logger.withContext("runner");
 
 export function run() {
   const cliArgs = parseCliArgs(process.argv);
+  log.debug("CLI args:", JSON.stringify(cliArgs));
 
-  const taskPath = cliArgs.values["task-path"];
+  const taskPath = cliArgs.taskPath;
   if (!taskPath) throw new Error("You must pass task path.");
-  const task = getTask(taskPath);
-}
 
-function getTask(taskPath: string) {
-  const taskFileContent = readFileSync(taskPath, "utf8");
-  const taskJson = parse(taskFileContent);
-  const taskJsonValidationResult = validateTask(taskJson as Task);
-
-  if (!taskJsonValidationResult.success) {
-    throw new Error(formatResult(taskJsonValidationResult));
-  } else if (taskJsonValidationResult.warnings) {
-    log.warn(formatResult(taskJsonValidationResult));
-  }
-
-  return taskJson as Task;
+  const task = loadTaskFromFile(taskPath);
 }
 
 // 1. parse CLI options

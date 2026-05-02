@@ -1,0 +1,161 @@
+[00:06:14.9][index] [INFO] 
+
+====================
+
+Run started
+[00:06:14.9][runner] [DEBUG] CLI args: [object Object]
+[00:06:14.9][index] [ERROR] Error: You must pass task path.
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:12:24)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+[00:06:14.9][index] [INFO] 
+
+Run ended
+[00:06:22.8][index] [INFO] 
+
+====================
+
+Run started
+[00:06:22.8][runner] [DEBUG] CLI args:  {
+  "values": {},
+  "positionals": []
+}
+[00:06:22.8][index] [ERROR] Error: You must pass task path.
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:12:24)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+[00:06:22.8][index] [INFO] 
+
+Run ended
+[00:06:38.6][index] [INFO] 
+
+====================
+
+Run started
+[00:06:38.6][runner] [DEBUG] CLI args:  {"values":{},"positionals":[]}
+[00:06:38.6][index] [ERROR] Error: You must pass task path.
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:12:24)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+[00:06:38.6][index] [INFO] 
+
+Run ended
+[00:07:02.6][index] [INFO] 
+
+====================
+
+Run started
+[00:07:02.6][index] [ERROR] TypeError [ERR_PARSE_ARGS_UNKNOWN_OPTION]: Unknown option '--task'. To specify a positional argument starting with a '-', place it at the end of the command after '--', as in '-- "--task"
+    at checkOptionUsage (node:internal/util/parse_args/parse_args:102:13)
+    at node:internal/util/parse_args/parse_args:377:9
+    at Array.forEach (<anonymous>)
+    at parseArgs (node:internal/util/parse_args/parse_args:374:3)
+    at parseCliArgs (/home/matej/dev/node/scheduled_tasks/src/runner/cli-parser.ts:4:35)
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:8:19)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+[00:07:02.6][index] [INFO] 
+
+Run ended
+[00:07:08.6][index] [INFO] 
+
+====================
+
+Run started
+[00:07:08.6][index] [ERROR] TypeError [ERR_PARSE_ARGS_UNKNOWN_OPTION]: Unknown option '--task'. To specify a positional argument starting with a '-', place it at the end of the command after '--', as in '-- "--task"
+    at checkOptionUsage (node:internal/util/parse_args/parse_args:102:13)
+    at node:internal/util/parse_args/parse_args:377:9
+    at Array.forEach (<anonymous>)
+    at parseArgs (node:internal/util/parse_args/parse_args:374:3)
+    at parseCliArgs (/home/matej/dev/node/scheduled_tasks/src/runner/cli-parser.ts:4:35)
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:8:19)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+[00:07:08.6][index] [INFO] 
+
+Run ended
+[00:07:14.0][index] [INFO] 
+
+====================
+
+Run started
+[00:07:14.0][runner] [DEBUG] CLI args: {"values":{},"positionals":["--task","dfdsfdf"]}
+[00:07:14.0][index] [ERROR] Error: You must pass task path.
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:12:24)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+[00:07:14.0][index] [INFO] 
+
+Run ended
+[00:08:17.5][index] [INFO] 
+
+====================
+
+Run started
+[00:08:17.5][runner] [DEBUG] CLI args: {"values":{},"positionals":["--task-path","dfdsfdf"]}
+[00:08:17.5][index] [ERROR] Error: You must pass task path.
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:12:24)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+[00:08:17.5][index] [INFO] 
+
+Run ended
+[00:10:05.9][index] [INFO] 
+
+====================
+
+Run started
+[00:10:05.9][runner] [DEBUG] CLI args: {"taskPath":"dfdsfdf","positionals":[]}
+[00:10:05.9][index] [ERROR] Error: ENOENT: no such file or directory, open 'dfdsfdf'
+    at readFileSync (node:fs:441:20)
+    at loadTaskFromFile (/home/matej/dev/node/scheduled_tasks/src/task/task-loader.ts:11:27)
+    at run (/home/matej/dev/node/scheduled_tasks/src/runner.ts:14:16)
+    at <anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:9:3)
+    at Object.<anonymous> (/home/matej/dev/node/scheduled_tasks/src/index.ts:14:25)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object.transformer (/home/matej/.cache/pnpm/dlx/cc5fc58d7389ce0db1878f48383c72c31c4f6959d85d13629f5bd3790f4c1fff/19deaba5821-f08f/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+[00:10:05.9][index] [INFO] 
+
+Run ended
