@@ -6,13 +6,12 @@ Memories will be saved as .txt files and should be live, AI maintained, brief do
 
 Web search is yet to be figured out. Service (MCP server)? Local function with some web search SDK? Or a locally running MCP server?
 
-
 ---
 
 ![Flow diagram](flow_diagram.png)
 
 1. in crontab, we define the actual cron jobs
-2. cron will call a specific script file in src/tasks, like {absolute path}/tsc {path}/src/tasks/task\_1.ts
+2. cron will call a specific script file in src/tasks, like {absolute path}/tsc {path}/src/tasks/task_1.ts
 3. the task defines prompt, system prompt, available functions the AI can call, and then call a shared function that will do the rest.
 4. When the AI finishes, a notification is sent to discord with the full content of the output (Q: how do we handle message length limits?)
 

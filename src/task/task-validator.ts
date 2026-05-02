@@ -54,7 +54,9 @@ function validateValues(task: Task, errors: string[], warnings: string[]) {
   const notificationChannelsAreValid = task.notification_channels.every((channel) =>
     taskConfigValues.notificationChannels.includes(channel),
   );
-  const toolNamesAreValid = task.toolNames.every((toolName) => taskConfigValues.toolNames.includes(toolName));
+  const toolNamesAreValid = task.toolNames.every((toolName) =>
+    taskConfigValues.toolNames.includes(toolName),
+  );
   const effortIsValid = taskConfigValues.efforts.includes(task.effort);
   const modelIsKnown = (taskConfigValues.models as readonly string[]).includes(task.model);
 
