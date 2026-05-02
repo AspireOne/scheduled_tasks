@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "AI cron jobs, like perplexity scheduled tasks, with web search and memories",
   "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "knip": "knip --no-exit-code",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
