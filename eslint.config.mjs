@@ -2,7 +2,8 @@ import eslintJs from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-const typeScriptFiles = ["src/**/*.ts", "*.config.ts"];
+const sourceTypeScriptFiles = ["src/**/*.ts"];
+const configTypeScriptFiles = ["*.config.ts"];
 
 export default defineConfig([
   {
@@ -11,6 +12,10 @@ export default defineConfig([
 
   eslintJs.configs.recommended,
   ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked.map((config) => ({
+    ...config,
+    files: sourceTypeScriptFiles,
+  })),
 
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
@@ -27,7 +32,17 @@ export default defineConfig([
   },
 
   {
-    files: typeScriptFiles,
+    files: sourceTypeScriptFiles,
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+
+  {
+    files: [...sourceTypeScriptFiles, ...configTypeScriptFiles],
     rules: {
       "@typescript-eslint/consistent-type-imports": [
         "warn",
