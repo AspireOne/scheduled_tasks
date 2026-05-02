@@ -9,6 +9,8 @@ Web search is yet to be figured out. Service (MCP server)? Local function with s
 
 ---
 
+![Flow diagram](flow_diagram.png)
+
 1. in crontab, we define the actual cron jobs
 2. cron will call a specific script file in src/tasks, like {absolute path}/tsc {path}/src/tasks/task\_1.ts
 3. the task defines prompt, system prompt, available functions the AI can call, and then call a shared function that will do the rest.

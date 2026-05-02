@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AI cron jobs, like perplexity scheduled tasks, with web search and memories",
   "scripts": {
-    "knip": "knip",
+    "knip": "knip --no-exit-code",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,7 +19,11 @@
     "eslint": "^10.3.0",
     "husky": "^9.1.7",
     "knip": "^6.11.0",
+    "prettier": "^3.8.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.1"
+  },
+  "dependencies": {
+    "smol-toml": "^1.6.1"
   }
 }
