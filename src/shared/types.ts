@@ -1,5 +1,3 @@
-import type { taskConfigValues } from "./constants";
-
 export type Result =
   | { success: false; errors: string[]; warnings: string[] }
   | { success: true; warnings: string[] };

@@ -13,10 +13,8 @@ export async function run(cliArgs: CliArgsValidated) {
     model: task.model,
     instructions: task.system_prompt || null,
     input: task.prompt,
-    tools: buildTools(task.toolNames),
-    reasoning: {
-      effort: task.effort,
-    },
+    tools: buildTools(task.tool_names),
+    reasoning: { effort: task.effort },
     prompt_cache_retention: "in_memory",
     parallel_tool_calls: true,
     truncation: "auto",

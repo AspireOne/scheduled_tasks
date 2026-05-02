@@ -3,7 +3,7 @@ import { parse } from "smol-toml";
 import { logger } from "../shared/logger";
 import { formatResult } from "../shared/utils";
 import { validateTask } from "./task-validator";
-import type { Task } from "./types";
+import type { Task } from "./task";
 
 const log = logger.withContext("TaskLoader");
 

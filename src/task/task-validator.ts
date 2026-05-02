@@ -1,6 +1,6 @@
-import { taskConfigValues } from "../shared/constants";
-import type { Result } from "../shared/types";
-import { type Task } from "./types";
+import type { Result } from "@/shared/types";
+import type { Task } from "./task";
+import { taskValues } from "./task-values";
 
 type RuleProperties = {
   required?: boolean;
@@ -22,7 +22,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
     minLength: 1,
     required: true,
   },
-  toolNames: {
+  tool_names: {
     required: true,
   },
   notification_channels: {
@@ -34,6 +34,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
   model: {
     required: true,
   },
+  web_search: {},
 };
 
 export function validateTask(task: Task): Result {
@@ -52,13 +53,13 @@ export function validateTask(task: Task): Result {
 
 function validateValues(task: Task, errors: string[], warnings: string[]) {
   const notificationChannelsAreValid = task.notification_channels.every((channel) =>
-    taskConfigValues.notificationChannels.includes(channel),
+    taskValues.notificationChannels.includes(channel),
   );
-  const toolNamesAreValid = task.toolNames.every((toolName) =>
-    taskConfigValues.toolNames.includes(toolName),
+  const toolNamesAreValid = task.tool_names.every((toolName) =>
+    taskValues.toolNames.includes(toolName),
   );
-  const effortIsValid = taskConfigValues.efforts.includes(task.effort);
-  const modelIsKnown = (taskConfigValues.models as readonly string[]).includes(task.model);
+  const effortIsValid = taskValues.efforts.includes(task.effort);
+  const modelIsKnown = (taskValues.models as readonly string[]).includes(task.model);
 
   if (!notificationChannelsAreValid) errors.push("invalid notification channel(s)");
   if (!toolNamesAreValid) errors.push("invalid tool name(s)");

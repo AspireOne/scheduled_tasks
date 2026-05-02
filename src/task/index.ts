@@ -1,5 +1,6 @@
 import { loadTaskFromFile } from "./task-loader";
 import { validateTask } from "./task-validator";
-import type { Task } from "./types";
+import { taskValues } from "./task-values";
 
-export { loadTaskFromFile, Task, validateTask };
+export { loadTaskFromFile, validateTask, taskValues };
+export * from "./task";
