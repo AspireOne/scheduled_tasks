@@ -1,4 +1,4 @@
-import { constants } from "../shared/constants";
+import { taskConfigValues } from "../shared/constants";
 import type { Result } from "../shared/types";
 import { type Task } from "./types";
 
@@ -22,7 +22,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
     minLength: 1,
     required: true,
   },
-  tools: {
+  toolNames: {
     required: true,
   },
   notification_channels: {
@@ -52,14 +52,14 @@ export function validateTask(task: Task): Result {
 
 function validateValues(task: Task, errors: string[], warnings: string[]) {
   const notificationChannelsAreValid = task.notification_channels.every((channel) =>
-    constants.notificationChannels.includes(channel),
+    taskConfigValues.notificationChannels.includes(channel),
   );
-  const toolsAreValid = task.tools.every((tool) => constants.tools.includes(tool));
-  const effortIsValid = constants.efforts.includes(task.effort);
-  const modelIsKnown = (constants.knownModels as readonly string[]).includes(task.model);
+  const toolNamesAreValid = task.toolNames.every((toolName) => taskConfigValues.toolNames.includes(toolName));
+  const effortIsValid = taskConfigValues.efforts.includes(task.effort);
+  const modelIsKnown = (taskConfigValues.models as readonly string[]).includes(task.model);
 
   if (!notificationChannelsAreValid) errors.push("invalid notification channel(s)");
-  if (!toolsAreValid) errors.push("invalid tool(s)");
+  if (!toolNamesAreValid) errors.push("invalid tool name(s)");
   if (!effortIsValid) errors.push("invalid effort");
   if (!modelIsKnown) warnings.push(`Model ${task.model} is not known. Make sure it is correct.`);
 }

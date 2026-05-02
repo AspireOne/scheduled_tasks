@@ -1,23 +1,25 @@
-import { parseCliArgs } from "./runner/cli-parser";
+import { openai } from "./ai/openai-client";
+import { getTools as buildTools } from "./ai/tools";
+import { type CliArgsValidated } from "./shared/cli-parser";
 import { logger } from "./shared/logger";
 import { loadTaskFromFile } from "./task";
 
 const log = logger.withContext("runner");
 
-export function run() {
-  const cliArgs = parseCliArgs(process.argv);
-  log.debug("CLI args:", JSON.stringify(cliArgs));
+export async function run(cliArgs: CliArgsValidated) {
+  const task = loadTaskFromFile(cliArgs.taskPath);
 
-  const taskPath = cliArgs.taskPath;
-  if (!taskPath) throw new Error("You must pass task path.");
-
-  const task = loadTaskFromFile(taskPath);
+  const response = await openai.responses.create({
+    model: task.model,
+    instructions: task.system_prompt || null,
+    input: task.prompt,
+    tools: buildTools(task.toolNames),
+    reasoning: {
+      effort: task.effort,
+    },
+    prompt_cache_retention: "in_memory",
+    parallel_tool_calls: true,
+    truncation: "auto",
+    // temperature: 0.8 // TODO: Check if this is supported for reasoning models
+  });
 }
-
-// 1. parse CLI options
-// - must specify a --task {path}.toml | if not, gracefully shut down and print the message
-// Validate toml config
-// - must be correct toml | if not, gracefully shut down and print the message
-//   - prompt must exist, must be below limit
-//   - system prompt size limit
-//   - model name must be one from

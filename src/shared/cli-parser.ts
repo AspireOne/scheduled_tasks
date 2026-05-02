@@ -15,4 +15,11 @@ export function parseCliArgs(args: string[]) {
   };
 }
 
-export type CliArgs = ReturnType<typeof parseCliArgs>;
+export function validateCliArgsOrThrow(args: CliArgsParsed): asserts args is CliArgsValidated {
+  if (!args.taskPath || args.taskPath.length === 0) {
+    throw new Error("You must pass task path.");
+  }
+}
+
+export type CliArgsParsed = ReturnType<typeof parseCliArgs>;
+export type CliArgsValidated = Omit<CliArgsParsed, "taskPath"> & { taskPath: string };

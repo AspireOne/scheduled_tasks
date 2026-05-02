@@ -1,4 +1,4 @@
-import type { Effort, KnownModel, NotificationChannel, Tool } from "@/shared/types";
+import type { Effort, KnownModel, NotificationChannel, ToolName } from "@/shared/constants";
 
 export type Task = {
   task_name: string;
@@ -6,6 +6,6 @@ export type Task = {
   prompt: string;
   model: KnownModel | (string & {});
   effort: Effort;
-  tools: Tool[];
+  toolNames: ToolName[];
   notification_channels: NotificationChannel[];
 };
