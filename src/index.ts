@@ -7,7 +7,7 @@ process.loadEnvFile();
 const log = logger.withContext("index");
 
 async function main() {
-  log.info("==================== Run started");
+  log.info("==================== Run started ====================");
   log.time("run");
 
   try {

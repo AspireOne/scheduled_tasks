@@ -1,6 +1,10 @@
 import { getEnv } from "@/shared/env";
 import type { Task, ToolName } from "@/task/task.type";
-import type { Tool as OpenaiTools } from "openai/resources/responses/responses.js";
+import type {
+  Tool as OpenaiTools,
+  Tool,
+  WebSearchTool,
+} from "openai/resources/responses/responses.js";
 
 export function buildTools(props: {
   toolNames: ToolName[];
@@ -29,7 +33,7 @@ export function buildTools(props: {
   return tools;
 }
 
-function buildWebSearchTool(webSearchConfig?: Task["web_search"]) {
+function buildWebSearchTool(webSearchConfig?: Task["web_search"]): WebSearchTool {
   // web_search docs: https://developers.openai.com/api/docs/guides/tools-web-search
   return {
     type: "web_search",
@@ -38,7 +42,7 @@ function buildWebSearchTool(webSearchConfig?: Task["web_search"]) {
   } as const;
 }
 
-function buildGoogleCalendarTool(accessToken: string) {
+function buildGoogleCalendarTool(accessToken: string): Tool.Mcp {
   // Google defined ones, see https://developers.google.com/workspace/calendar/api/v3/reference/mcp#tools
   const tools = [
     "create_event",
@@ -67,7 +71,7 @@ function buildGoogleCalendarTool(accessToken: string) {
   } as const;
 }
 
-function buildNoteManagementTool() {
+function buildNoteManagementTool(): Tool.Mcp {
   return {
     type: "mcp",
     server_label: "note_management",
