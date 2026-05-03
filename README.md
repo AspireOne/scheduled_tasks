@@ -11,8 +11,6 @@ Typical uses:
 
 Cron or any other scheduler is external to this project. This repository is the task runner.
 
-![Flow diagram](flow_diagram.png)
-
 ## What It Does
 
 For a single run, the runner:
