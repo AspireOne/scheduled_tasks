@@ -54,7 +54,7 @@ const logConfig = {
  *
  * @param filePath - Absolute or relative path to the log file.
  */
-export function setLogFilePath(filePath: string): void {
+function _setLogFilePath(filePath: string): void {
   logConfig.filePath = path.resolve(filePath);
 }
 

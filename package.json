@@ -26,7 +26,6 @@
     "typescript-eslint": "^8.59.1"
   },
   "dependencies": {
-    "@openai/agents": "^0.8.5",
     "openai": "^6.35.0",
     "smol-toml": "^1.6.1"
   }

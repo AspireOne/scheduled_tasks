@@ -1,4 +1,4 @@
-export function joinArrayForPrint(values: string[]): string {
+function joinArrayForPrint(values: string[]): string {
   return "- " + values.join("\n- ");
 }
 

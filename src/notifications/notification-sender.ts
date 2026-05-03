@@ -1,7 +1,6 @@
 import { logger } from "@/shared/logger";
 import type { NotificationChannel } from "@/task";
 import { sendDiscordNotification } from "./discord-notifier";
-import { getEnv } from "@/shared/env";
 
 const log = logger.withContext("notification-sender");
 

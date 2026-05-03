@@ -21,5 +21,5 @@ export function validateCliArgsOrThrow(args: CliArgsParsed): asserts args is Cli
   }
 }
 
-export type CliArgsParsed = ReturnType<typeof parseCliArgs>;
+type CliArgsParsed = ReturnType<typeof parseCliArgs>;
 export type CliArgsValidated = Omit<CliArgsParsed, "taskPath"> & { taskPath: string };

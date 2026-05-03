@@ -1,4 +1,3 @@
-import { getEnv } from "@/shared/env";
 import { logger } from "@/shared/logger";
 import { chunkDiscordMessage } from "./discord-message-chunker";
 
