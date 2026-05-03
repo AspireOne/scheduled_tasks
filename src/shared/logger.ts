@@ -13,22 +13,22 @@ import * as path from "node:path";
  * ```typescript
  * import { logger } from '@/shared/logger';
  *
- * logger.log('App started');           // [22:30:15.3] App started
- * logger.error('Failed to load', err); // [22:30:15.3] Failed to load <error>
+ * logger.log('App started');           // [22:30:15.3][LOG] App started
+ * logger.error('Failed to load', err); // [22:30:15.3][ERROR] Failed to load <error>
  * ```
  *
  * ## Context Usage (Recommended for Modules/Services)
  * ```typescript
  * const log = logger.withContext('Runner');
  *
- * log.info('Task started');   // [22:30:15.3][Runner] Task started
- * log.error('Failed', err);   // [22:30:15.3][Runner] Failed <error>
+ * log.info('Task started');   // [22:30:15.3][INFO][Runner] Task started
+ * log.error('Failed', err);   // [22:30:15.3][ERROR][Runner] Failed <error>
  * ```
  *
  * ## Nested Contexts
  * ```typescript
  * const log = logger.withContext('Runner').withContext('Validator');
- * log.info('Config valid');  // [22:30:15.3][Runner][Validator] Config valid
+ * log.info('Config valid');  // [22:30:15.3][INFO][Runner][Validator] Config valid
  * ```
  *
  * ## Log File
@@ -39,7 +39,7 @@ import * as path from "node:path";
  * import { initLogger, logger } from '@/shared/logger';
  *
  * initLogger('./logs/my-task.log');
- * logger.info('App started'); // written to ./logs/my-task.log
+ * logger.info('App started'); // written as [time][INFO] ... to ./logs/my-task.log
  * ```
  */
 
@@ -110,7 +110,7 @@ class Logger {
    *
    * @example
    * const log = logger.withContext('Scheduler');
-   * log.info('Running');  // [22:30:15.3][Scheduler] Running
+   * log.info('Running');  // [22:30:15.3][INFO][Scheduler] Running
    */
   withContext(context: string): Logger {
     const child = new Logger();
@@ -119,28 +119,28 @@ class Logger {
   }
 
   /** Build the plain-text prefix shared by all methods. */
-  private buildPrefix(): string {
+  private buildPrefix(level: LogLevel): string {
     const contextSegments = this.contexts.map((c) => `[${c}]`).join("");
-    return `[${getTimestamp()}]${contextSegments}`;
+    return `[${getTimestamp()}][${level}]${contextSegments}`;
   }
 
   /**
    * Format and emit a log line to both the console (stdout/stderr) and the
    * log file.
    *
-   * @param level  - Log level label written to file (not shown on console).
+   * @param level  - Log level label included in the shared prefix.
    * @param consoleFn - The console method to call for mirroring.
    * @param args   - Arbitrary values the caller wants to log.
    */
   private emit(level: LogLevel, consoleFn: (...args: unknown[]) => void, args: unknown[]): void {
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix(level);
 
     // Mirror to console with the prefix prepended to the first argument.
     consoleFn(prefix, ...args);
 
     // Serialise all arguments into a single line for the file.
     const serialized = args.map(serialize).join(" ");
-    writeToFile(`${prefix} [${level}] ${serialized}`);
+    writeToFile(`${prefix} ${serialized}`);
   }
 
   // ── Public logging methods ────────────────────────────────────────────────
@@ -173,13 +173,13 @@ class Logger {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- console.table accepts `any`
   table(data: any, columns?: string[]): void {
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix("LOG");
     console.log(prefix, "Table:");
     console.table(data, columns);
 
     // Represent the table as JSON in the log file.
     const serialized = serialize(data);
-    writeToFile(`${prefix} [LOG] Table:\n${serialized}`);
+    writeToFile(`${prefix} Table:\n${serialized}`);
   }
 
   // ── Timers ────────────────────────────────────────────────────────────────
@@ -188,40 +188,41 @@ class Logger {
 
   time(label: string = "default"): void {
     this.timers.set(label, Date.now());
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix("LOG");
     const msg = `Timer started: ${label}`;
     console.log(prefix, msg);
-    writeToFile(`${prefix} [LOG] ${msg}`);
+    writeToFile(`${prefix} ${msg}`);
   }
 
   timeEnd(label: string = "default"): void {
     const start = this.timers.get(label);
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix("LOG");
     if (start === undefined) {
       const msg = `Timer "${label}" does not exist`;
-      console.warn(prefix, msg);
-      writeToFile(`${prefix} [WARN] ${msg}`);
+      const warnPrefix = this.buildPrefix("WARN");
+      console.warn(warnPrefix, msg);
+      writeToFile(`${warnPrefix} ${msg}`);
       return;
     }
     const elapsed = Date.now() - start;
     this.timers.delete(label);
     const msg = `${label}: ${elapsed}ms`;
     console.log(prefix, msg);
-    writeToFile(`${prefix} [LOG] ${msg}`);
+    writeToFile(`${prefix} ${msg}`);
   }
 
   // ── Groups (console-only; groups have no meaningful file representation) ──
 
   group(...args: unknown[]): void {
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix("LOG");
     console.group(prefix, ...args);
-    writeToFile(`${prefix} [LOG] group: ${args.map(serialize).join(" ")}`);
+    writeToFile(`${prefix} group: ${args.map(serialize).join(" ")}`);
   }
 
   groupCollapsed(...args: unknown[]): void {
-    const prefix = this.buildPrefix();
+    const prefix = this.buildPrefix("LOG");
     console.groupCollapsed(prefix, ...args);
-    writeToFile(`${prefix} [LOG] groupCollapsed: ${args.map(serialize).join(" ")}`);
+    writeToFile(`${prefix} groupCollapsed: ${args.map(serialize).join(" ")}`);
   }
 
   groupEnd(): void {
