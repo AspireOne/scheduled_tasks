@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { globalConfig } from "@/config";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -30,23 +31,7 @@ import * as path from "node:path";
  * const log = logger.withContext('Runner').withContext('Validator');
  * log.info('Config valid');  // [22:30:15.3][INFO][Runner][Validator] Config valid
  * ```
- *
- * ## Log File
- * Call `initLogger(filePath)` once at startup to set the log file path before
- * any log calls are made. All subsequent writes go to that file.
- *
- * ```typescript
- * import { initLogger, logger } from '@/shared/logger';
- *
- * initLogger('./logs/my-task.log');
- * logger.info('App started'); // written as [time][INFO] ... to ./logs/my-task.log
- * ```
  */
-
-/** Internal mutable config — mutated only by initLogger(). */
-const logConfig = {
-  filePath: path.resolve("scheduled_tasks.log"),
-};
 
 /**
  * Set the log file path. Must be called before any log statements.
@@ -55,12 +40,12 @@ const logConfig = {
  * @param filePath - Absolute or relative path to the log file.
  */
 function _setLogFilePath(filePath: string): void {
-  logConfig.filePath = path.resolve(filePath);
+  globalConfig.logFilePath = path.resolve(filePath);
 }
 
 export function pruneLogFile(maxLines: number): void {
   try {
-    const content = fs.readFileSync(logConfig.filePath, "utf8");
+    const content = fs.readFileSync(globalConfig.logFilePath, "utf8");
     const lines = content.split(/\r?\n/);
 
     if (lines.at(-1) === "") {
@@ -72,7 +57,7 @@ export function pruneLogFile(maxLines: number): void {
     }
 
     const prunedContent = `${lines.slice(-maxLines).join("\n")}\n`;
-    fs.writeFileSync(logConfig.filePath, prunedContent, "utf8");
+    fs.writeFileSync(globalConfig.logFilePath, prunedContent, "utf8");
   } catch {
     // Best-effort: if the file cannot be read or written, do not crash.
   }
@@ -116,7 +101,7 @@ function serialize(value: unknown): string {
  */
 function writeToFile(line: string): void {
   try {
-    fs.appendFileSync(logConfig.filePath, line + "\n", "utf8");
+    fs.appendFileSync(globalConfig.logFilePath, line + "\n", "utf8");
   } catch {
     // Best-effort: if the file cannot be written, do not crash.
   }
