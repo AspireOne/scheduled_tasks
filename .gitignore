@@ -8,3 +8,4 @@ dist/
 .tasks
 scheduled_tasks.log
 logs/
+*.log
