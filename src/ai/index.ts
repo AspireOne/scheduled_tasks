@@ -1,4 +1,4 @@
 import type openai from "openai";
-export { getTools } from "./tools";
+export { buildTools as getTools } from "./tools";
 
 export { openai };

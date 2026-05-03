@@ -1,12 +1,12 @@
-import { getEnv } from "@/shared/env";
 import type { Task, ToolName } from "@/task/task.type";
 import type { Tool as OpenaiTools } from "openai/resources/responses/responses.js";
 
-export function getTools(props: {
+export function buildTools(props: {
   toolNames: ToolName[];
   webSearchConfig?: Task["web_search"];
+  googleCalendarAccessToken?: string;
 }): OpenaiTools[] {
-  const { toolNames, webSearchConfig } = props;
+  const { toolNames, webSearchConfig, googleCalendarAccessToken } = props;
   const tools: OpenaiTools[] = [];
 
   if (toolNames.includes("web_search")) {
@@ -14,7 +14,11 @@ export function getTools(props: {
   }
 
   if (toolNames.includes("google_calendar")) {
-    tools.push(buildGoogleCalendarTool());
+    if (!googleCalendarAccessToken) {
+      throw new Error("google_calendar tool requested without an access token");
+    }
+
+    tools.push(buildGoogleCalendarTool(googleCalendarAccessToken));
   }
 
   return tools;
@@ -29,7 +33,7 @@ function buildWebSearchTool(webSearchConfig?: Task["web_search"]) {
   } as const;
 }
 
-function buildGoogleCalendarTool() {
+function buildGoogleCalendarTool(accessToken: string) {
   // Google defined ones, see https://developers.google.com/workspace/calendar/api/v3/reference/mcp#tools
   const tools = [
     "create_event",
@@ -46,12 +50,13 @@ function buildGoogleCalendarTool() {
     "search",
     "get_profile",
   ];
+
   return {
     type: "mcp",
     defer_loading: false,
     server_label: "google_calendar",
     connector_id: "connector_googlecalendar",
-    authorization: getEnv().GOOGLE_CALENDAR_REFRESH_TOKEN,
+    authorization: accessToken,
     require_approval: "never",
     allowed_tools: tools,
   } as const;
