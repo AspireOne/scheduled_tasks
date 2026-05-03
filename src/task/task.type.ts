@@ -1,3 +1,4 @@
+import type { takePendingToolSearchCallId } from "@openai/agents/utils";
 import type { taskValues } from "./task-values";
 
 export type Task = {
@@ -10,9 +11,9 @@ export type Task = {
   notification_channels: NotificationChannel[];
   // TODO: Make sure smol-toml will parse it in this nested way (in TOML it would be [web_search.user_location])
   web_search?: {
-    search_context_size?: string;
+    search_context_size?: SearchContextSize;
     user_location?: {
-      type?: string;
+      type?: WebSearchUserLocationType;
       country?: string;
       city?: string;
       region?: string;
@@ -25,3 +26,4 @@ export type Model = (typeof taskValues.models)[number];
 export type ToolName = (typeof taskValues.toolNames)[number];
 export type NotificationChannel = (typeof taskValues.notificationChannels)[number];
 export type SearchContextSize = (typeof taskValues.webSearch.searchContextSize)[number];
+export type WebSearchUserLocationType = (typeof taskValues.webSearch.user_location.type)[number];

@@ -1,5 +1,5 @@
 import type { Result } from "@/shared/types";
-import type { Task } from "./task";
+import type { Task } from "./task.type";
 import { taskValues } from "./task-values";
 
 type RuleProperties = {

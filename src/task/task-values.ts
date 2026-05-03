@@ -8,6 +8,9 @@ export const taskValues = {
   notificationChannels: ["discord", "log"] as const,
   webSearch: {
     searchContextSize: ["low", "medium", "high"],
+    user_location: {
+      type: ["approximate"],
+    },
   },
 } as const;
 
