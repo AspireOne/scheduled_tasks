@@ -92,6 +92,7 @@ Required fields:
 Optional fields:
 
 - `system_prompt`
+- `notifications`
 - `web_search`
 
 ### Supported Values
@@ -151,6 +152,9 @@ Prioritize places where meeting new people is realistic.
 If suitable events are found, add them to Google Calendar and keep memory notes useful for the next run.
 """
 
+[notifications.log]
+file_path = "./logs/weekly-brno-social-events.notifications.log"
+
 [web_search]
 search_context_size = "high"
 
@@ -190,6 +194,20 @@ Controls which tools are exposed to the model for the run.
 ### `notification_channels`
 
 Controls where the final text output is sent.
+
+### `notifications`
+
+Optional channel-specific notification config.
+
+Example:
+
+```toml
+[notifications.log]
+file_path = "./logs/custom.notifications.log"
+```
+
+If a task uses the `log` notification channel and `notifications.log.file_path` is omitted, the runner writes
+to `logs/<task-name-slug>.notifications.log` relative to the task file directory.
 
 ### `web_search`
 
@@ -243,8 +261,9 @@ If `web_search` is enabled but this section is omitted, the runner uses:
 
 ### Log
 
-- writes the final output to the local logger
-- the default log file is `scheduled_tasks.log`
+- writes the final output to a dedicated notification log file
+- default path is `logs/<task-name-slug>.notifications.log` relative to the task file directory
+- `notifications.log.file_path` can override the destination
 
 ## Development
 

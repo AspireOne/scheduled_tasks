@@ -28,6 +28,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
   notification_channels: {
     required: true,
   },
+  notifications: {},
   effort: {
     required: true,
   },
@@ -47,6 +48,7 @@ export function validateTask(task: Task): Result {
 
   validateValues(task, errors, warnings);
   validateLengthConstraints(task, errors);
+  validateNotificationConfig(task, errors);
 
   const success = errors.length === 0;
   return { success, errors, warnings };
@@ -100,4 +102,32 @@ function validateLengthConstraints(task: Task, errors: string[]): void {
       errors.push(`Field ${key} is smaller than min length (${rule.minLength})`);
     }
   }
+}
+
+function validateNotificationConfig(task: Task, errors: string[]): void {
+  if (task.notifications == null) return;
+  if (!isPlainObject(task.notifications)) {
+    errors.push("notifications must be a table/object");
+    return;
+  }
+
+  if (!("log" in task.notifications) || task.notifications.log == null) return;
+  if (!isPlainObject(task.notifications.log)) {
+    errors.push("notifications.log must be a table/object");
+    return;
+  }
+
+  if (!("file_path" in task.notifications.log) || task.notifications.log.file_path == null) return;
+  if (typeof task.notifications.log.file_path !== "string") {
+    errors.push("notifications.log.file_path must be a string");
+    return;
+  }
+
+  if (task.notifications.log.file_path.length === 0) {
+    errors.push("notifications.log.file_path must not be empty");
+  }
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

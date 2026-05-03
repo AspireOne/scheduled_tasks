@@ -1,5 +1,7 @@
+import * as path from "node:path";
 import { runTaskResponse } from "./ai/response-runner";
 import { buildTools } from "./ai/tools";
+import { getDefaultNotificationLogFilePath } from "./notifications/log-notifier";
 import { sendNotifications } from "./notifications";
 import { type CliArgsValidated } from "./shared/cli-parser";
 import {
@@ -15,6 +17,7 @@ const log = logger.withContext("runner");
 
 export async function run(cliArgs: CliArgsValidated) {
   const task = loadTaskFromFile(cliArgs.taskPath);
+  const taskDirectory = path.dirname(path.resolve(cliArgs.taskPath));
   log.info("Task loaded:", task.task_name);
   log.debug("Task:", task);
 
@@ -55,10 +58,30 @@ export async function run(cliArgs: CliArgsValidated) {
   await sendNotifications({
     channels: task.notification_channels,
     discordWebhokUrl: task.discord_webhook_url || getEnv().DISCORD_WEBHOOK_URL,
+    logFilePath: getNotificationLogFilePath({
+      taskDirectory,
+      taskName: task.task_name,
+      configuredPath: task.notifications?.log?.file_path,
+    }),
     payload: {
       taskName: task.task_name,
       content: response.output_text,
     },
   });
   log.timeEnd("notifications");
+}
+
+function getNotificationLogFilePath(params: {
+  taskDirectory: string;
+  taskName: string;
+  configuredPath: string | undefined;
+}): string {
+  if (params.configuredPath) {
+    return path.resolve(params.taskDirectory, params.configuredPath);
+  }
+
+  return getDefaultNotificationLogFilePath({
+    taskDirectory: params.taskDirectory,
+    taskName: params.taskName,
+  });
 }

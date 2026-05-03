@@ -9,6 +9,7 @@ export type Task = {
   effort: Effort;
   tool_names: ToolName[];
   notification_channels: NotificationChannel[];
+  notifications?: TaskNotifications;
   web_search?: {
     search_context_size?: SearchContextSize;
     user_location?: {
@@ -17,6 +18,12 @@ export type Task = {
       city?: string;
       region?: string;
     };
+  };
+};
+
+export type TaskNotifications = {
+  log?: {
+    file_path?: string;
   };
 };
 
