@@ -3,7 +3,7 @@ import { openai } from "./ai/openai-client";
 import { buildTools } from "./ai/tools";
 import { sendNotifications } from "./notifications";
 import { type CliArgsValidated } from "./shared/cli-parser";
-import { validateDiscordEnvOrThrow } from "./shared/env";
+import { getEnv, validateDiscordEnvOrThrow } from "./shared/env";
 import { getGoogleCalendarAccessToken } from "./shared/google-calendar-auth";
 import { logger } from "./shared/logger";
 import { loadTaskFromFile } from "./task";
@@ -12,7 +12,7 @@ const log = logger.withContext("runner");
 
 export async function run(cliArgs: CliArgsValidated) {
   const task = loadTaskFromFile(cliArgs.taskPath);
-  if (task.notification_channels.includes("discord")) {
+  if (task.notification_channels.includes("discord") && !task.discord_webhook_url) {
     validateDiscordEnvOrThrow();
   }
 
@@ -39,6 +39,7 @@ export async function run(cliArgs: CliArgsValidated) {
 
   await sendNotifications({
     channels: task.notification_channels,
+    discordWebhokUrl: task.discord_webhook_url || getEnv().DISCORD_WEBHOOK_URL,
     payload: {
       taskName: task.task_name,
       content: response.output_text,

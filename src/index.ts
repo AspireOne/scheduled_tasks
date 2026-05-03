@@ -8,6 +8,7 @@ const log = logger.withContext("index");
 
 async function main() {
   log.info("==================== Run started");
+  log.time("run");
 
   try {
     validateEnvOrThrow();
@@ -21,7 +22,8 @@ async function main() {
     log.error(err);
   }
 
-  log.info("=================== Run ended");
+  log.timeEnd("run");
+  log.info("Run ended\n\n\n");
 }
 
 // TODO: Do we need to await?

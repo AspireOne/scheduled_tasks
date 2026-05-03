@@ -9,12 +9,14 @@ type NotificationPayload = {
   content: string;
 };
 
-export async function sendDiscordNotification(payload: NotificationPayload): Promise<void> {
-  const { DISCORD_WEBHOOK_URL } = getEnv();
+export async function sendDiscordNotification(
+  payload: NotificationPayload,
+  webhookUrl: string,
+): Promise<void> {
   const messageChunks = buildDiscordMessages(payload);
 
   for (const messageChunk of messageChunks) {
-    const response = await fetch(DISCORD_WEBHOOK_URL, {
+    const response = await fetch(webhookUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

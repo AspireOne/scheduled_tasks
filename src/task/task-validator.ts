@@ -35,6 +35,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
     required: true,
   },
   web_search: {},
+  discord_webhook_url: {},
 };
 
 export function validateTask(task: Task): Result {
