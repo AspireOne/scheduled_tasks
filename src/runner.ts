@@ -8,12 +8,13 @@ const log = logger.withContext("runner");
 
 export async function run(cliArgs: CliArgsValidated) {
   const task = loadTaskFromFile(cliArgs.taskPath);
+  const tools = buildTools({ toolNames: task.tool_names, webSearchConfig: task.web_search });
 
   const response = await openai.responses.create({
     model: task.model,
     instructions: task.system_prompt || null,
     input: task.prompt,
-    tools: buildTools({ toolNames: task.tool_names }),
+    tools: tools,
     reasoning: { effort: task.effort },
     prompt_cache_retention: "in_memory",
     parallel_tool_calls: true,

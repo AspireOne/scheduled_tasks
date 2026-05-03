@@ -1,5 +1,7 @@
 # Scheduled Tasks
 
+### This app was fucking written with no AI AND I REALLY REGRET THE HOURS WASTED ON MAKING MY OWN SHITTY ASS WANNABE ZOD JSON VALIDATOR LMAO. Among other things...
+
 AI-based cron jobs that run periodically and invoke an AI prompt, providing tools to it (web search and saving memories) and sending the result to Discord. Should work exactly like Perplexity Scheduled Tasks.
 
 Memories will be saved as .txt files and should be live, AI maintained, brief documents where the AI stores information for next instances to have. It should include notes for next run, the output of previous runs (e.g. the specific recommendation it gave to me in regards to something, so that it does not repeat it in the future), or user preferences (perhaps at the top).
