@@ -1,0 +1,22 @@
+task_name = "Brno story"
+model = "gpt-5.4"
+effort = "medium"
+tool_names = ["web_search"]
+notification_channels = ["log"]
+system_prompt = """
+You are running as a scheduled task.
+Use the current date as the anchor for any relative timing references.
+Prefer lively, specific, readable output over dry exposition.
+"""
+prompt = """
+Tell me one fascinating story about Brno: a street, building, person, scandal, invention, neighborhood, or historical event. Include a place I could visit related to it. Prefer fun or current stories over dry historical facts.
+"""
+
+[web_search]
+search_context_size = "medium"
+
+[web_search.user_location]
+type = "approximate"
+country = "CZ"
+city = "Brno"
+region = "South Moravian"

@@ -1,0 +1,14 @@
+task_name = "Weekend conversation starters"
+model = "gpt-5.4"
+effort = "medium"
+tool_names = ["web_search"]
+notification_channels = ["discord"]
+prompt = """
+Five interesting conversation starters for the weekend: one science fact, one culture topic, one business news item, one local Czech Republic story, one weird/unusual story
+"""
+
+[notifications.log]
+file_path = "../logs/weekend-conversation-starters.notifications.log"
+
+[web_search]
+search_context_size = "medium"

@@ -1,0 +1,10 @@
+task_name = "Richer weekend"
+model = "gpt-5.4"
+effort = "medium"
+tool_names = []
+notification_channels = ["discord"]
+prompt = """
+Suggest one small, affordable thing I can do this coming weekend to make life feel richer (for example: food, walk, music, bookshop, bath, museum, view, letter, ritual, or mini-adventure).
+
+Also, as a second thing: tell me one thing that is especially good to do in Brno (or even in general), this week of the year: food, event, walk, market, neighborhood, view, museum, day trip, seasonal ritual...
+"""

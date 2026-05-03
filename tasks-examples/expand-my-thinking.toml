@@ -1,0 +1,18 @@
+task_name = "Expand my thinking"
+model = "gpt-5.4"
+effort = "medium"
+tool_names = ["web_search", "memories"]
+notification_channels = ["discord", "log"]
+system_prompt = """
+You are running as a scheduled task.
+Use the current date as the anchor for any relative timing references.
+Prioritize surprising, useful, non-mainstream recommendations.
+"""
+prompt = """
+Find one unusual idea, tool, book, research paper, historical story, or emerging trend that could expand how I think. It should be surprising, useful, and not mainstream. Always write it, along with current date, to notes.txt, so that we have a log of historical recommendations. Also, if the user suggests that they want to adjust the scope, see more of this or less or that, or any other notes or preferences, log these to memories using the provided tool.
+
+Use the Internal note management MCP tool with space_id "expand_my_thinking_space". Read and update notes.txt there. Any update is overwrite, so provide the full new file content when saving.
+"""
+
+[web_search]
+search_context_size = "medium"

@@ -1,0 +1,22 @@
+task_name = "Brno local discovery"
+model = "gpt-5.4"
+effort = "medium"
+tool_names = ["web_search"]
+notification_channels = ["log"]
+prompt = """
+Every Friday, recommend one beautiful local or seasonal thing in Brno or the surrounding area that I might otherwise not notice — for example, a viewpoint, a flowering tree, the time of sunset, an interesting architectural detail on a building, a concert, an exhibition, a pleasant corner in a café, a walk through a cemetery, a route along the river, or a quiet street.
+
+At the same time, also recommend a place in Brno that I could visit.
+"""
+
+[notifications.log]
+file_path = "../logs/brno-local-discovery.notifications.log"
+
+[web_search]
+search_context_size = "medium"
+
+[web_search.user_location]
+type = "approximate"
+country = "CZ"
+city = "Brno"
+region = "South Moravian"

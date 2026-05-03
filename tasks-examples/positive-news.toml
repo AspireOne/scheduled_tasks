@@ -1,0 +1,11 @@
+task_name = "Positive news"
+model = "gpt-5.4-mini"
+effort = "medium"
+tool_names = ["web_search"]
+notification_channels = ["discord"]
+prompt = """
+Find one positive news, positive change, or any other positive or good news, and tell me about it briefly.
+"""
+
+[web_search]
+search_context_size = "medium"

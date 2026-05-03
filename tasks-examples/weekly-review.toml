@@ -1,0 +1,18 @@
+task_name = "Weekly review"
+model = "gpt-5.4"
+effort = "high"
+tool_names = ["memories"]
+notification_channels = ["discord"]
+prompt = """
+Ask me 5 thoughtful questions to review the past week. One question must ask how I did on the focus I chose for the previous week. The questions should help me identify what drained me / made me anxious, what energized me / made me feel content, what mattered most, and what I want to improve next.
+
+After I answer:
+- Summarize the durable takeaways.
+- Record in weekly-review.txt the date, the questions, my main reflections, the main drains, the main energizers, the focus I chose for the coming week, a short note on how I did against the prior week’s focus, and your personal note, just for yourself, about what you think about me and about my progress from the POV of someone who wants me to do good, be content, and succeed (this note will not be read by me).
+- Use notes.txt as the long-term source of truth so future weekly reviews can track patterns, progress, setbacks, and course corrections over time.
+- Use memory only for lightweight recurring preferences or stable instructions, such as how reflective, direct, or structured I want these reviews to be.
+
+Do not search anything on the internet. Using any sort of web search tool is not useful here.
+
+Use the Internal note management MCP tool with space_id "weekly_review_space". Read and update notes.txt and weekly-review.txt there. Any update is overwrite, so provide the full new file content when saving.
+"""
