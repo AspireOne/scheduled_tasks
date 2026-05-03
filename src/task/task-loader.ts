@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { parse } from "smol-toml";
 import { logger } from "../shared/logger";
-import { formatResult } from "../shared/utils";
+import { formatResult } from "../shared/helpers";
 import { validateTask } from "./task-validator";
 import type { Task } from "./task.type";
 

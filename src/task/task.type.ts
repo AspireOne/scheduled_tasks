@@ -8,7 +8,6 @@ export type Task = {
   effort: Effort;
   tool_names: ToolName[];
   notification_channels: NotificationChannel[];
-  // TODO: Make sure smol-toml will parse it in this nested way (in TOML it would be [web_search.user_location])
   web_search?: {
     search_context_size?: SearchContextSize;
     user_location?: {

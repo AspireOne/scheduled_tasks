@@ -1,3 +1,4 @@
+import { augmentWithCurrentDate } from "./ai/helpers";
 import { openai } from "./ai/openai-client";
 import { buildTools } from "./ai/tools";
 import { type CliArgsValidated } from "./shared/cli-parser";
@@ -21,14 +22,13 @@ export async function run(cliArgs: CliArgsValidated) {
 
   const response = await openai.responses.create({
     model: task.model,
-    instructions: task.system_prompt || null,
+    instructions: task.system_prompt ? augmentWithCurrentDate(task.system_prompt) : null,
     input: task.prompt,
     tools: tools,
     reasoning: { effort: task.effort },
     prompt_cache_retention: "in_memory",
     parallel_tool_calls: true,
     truncation: "auto",
-    // temperature: 0.8 // TODO: Check if this is supported for reasoning models
   });
 
   log.info("Response:", response.output_text);

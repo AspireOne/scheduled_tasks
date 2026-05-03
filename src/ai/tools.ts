@@ -1,3 +1,4 @@
+import { getEnv } from "@/shared/env";
 import type { Task, ToolName } from "@/task/task.type";
 import type { Tool as OpenaiTools } from "openai/resources/responses/responses.js";
 
@@ -19,6 +20,10 @@ export function buildTools(props: {
     }
 
     tools.push(buildGoogleCalendarTool(googleCalendarAccessToken));
+  }
+
+  if (toolNames.includes("memories")) {
+    tools.push(buildNoteManagementTool());
   }
 
   return tools;
@@ -59,5 +64,17 @@ function buildGoogleCalendarTool(accessToken: string) {
     authorization: accessToken,
     require_approval: "never",
     allowed_tools: tools,
+  } as const;
+}
+
+function buildNoteManagementTool() {
+  return {
+    type: "mcp",
+    server_label: "memories_mcp",
+    server_description: "Internal note management / memories tool",
+    server_url: "https://note-management-mcp.matejpesl.cz/mcp",
+    authorization: `Bearer ${getEnv().MEMORIES_MCP_API_KEY}`,
+    require_approval: "never",
+    defer_loading: false,
   } as const;
 }

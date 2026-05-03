@@ -14,6 +14,10 @@ export function validateEnvOrThrow(): void {
   if (!process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]) {
     throw new Error("GOOGLE_CALENDAR_CLIENT_SECRET env variable must be present");
   }
+
+  if (!process.env["MEMORIES_MCP_API_KEY"]) {
+    throw new Error("MEMORIES_MCP_API_KEY env variable must be present");
+  }
 }
 
 export function getEnv() {
@@ -22,5 +26,6 @@ export function getEnv() {
     GOOGLE_CALENDAR_REFRESH_TOKEN: process.env["GOOGLE_CALENDAR_REFRESH_TOKEN"]!,
     GOOGLE_CALENDAR_CLIENT_ID: process.env["GOOGLE_CALENDAR_CLIENT_ID"]!,
     GOOGLE_CALENDAR_CLIENT_SECRET: process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]!,
+    MEMORIES_MCP_API_KEY: process.env["MEMORIES_MCP_API_KEY"]!,
   };
 }
