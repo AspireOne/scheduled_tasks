@@ -28,7 +28,11 @@ function getEfforts() {
 }
 
 function getModels() {
-  return ["gpt-5.4", "gpt-5.4-mini"] as const satisfies readonly ExtractLiterals<AllModels>[];
+  return [
+    "gpt-5.4",
+    "gpt-5.4-mini",
+    //"gpt-5.5",
+  ] as const satisfies readonly ExtractLiterals<AllModels>[];
 }
 
 // Enforce at compile time that efforts contains all non-null ReasoningEffort values
