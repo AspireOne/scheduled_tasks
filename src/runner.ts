@@ -42,6 +42,15 @@ export async function run(cliArgs: CliArgsValidated) {
   });
   log.timeEnd("openai_response");
 
+  const usage = response.usage;
+  log.info("OpenAI response usage", {
+    total: usage?.total_tokens,
+    input: usage?.input_tokens,
+    output: usage?.output_tokens,
+    reasoning: usage?.output_tokens_details?.reasoning_tokens,
+    cachedInput: usage?.input_tokens_details?.cached_tokens,
+  });
+
   log.time("notifications");
   await sendNotifications({
     channels: task.notification_channels,
