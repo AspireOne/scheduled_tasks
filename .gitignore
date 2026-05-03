@@ -9,3 +9,4 @@ dist/
 scheduled_tasks.log
 logs/
 *.log
+run-task.sh
