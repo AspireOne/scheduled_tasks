@@ -1,9 +1,9 @@
 import * as path from "node:path";
 import { runTaskResponse } from "./ai/response-runner";
 import { buildTools } from "./ai/tools";
+import { getResponseId, upsertResponseId } from "./conversations";
 import { getDefaultNotificationLogFilePath } from "./notifications/log-notifier";
 import { sendNotifications } from "./notifications";
-import { type CliArgsValidated } from "./shared/cli-parser";
 import {
   getEnv,
   validateDiscordEnvOrThrow,
@@ -12,26 +12,47 @@ import {
 } from "./shared/env";
 import { logger } from "./shared/logger";
 import { loadTaskFromFile } from "./task";
+import type { Task } from "./task/task.type";
 
 const log = logger.withContext("runner");
 
-export async function run(cliArgs: CliArgsValidated) {
-  const task = loadTaskFromFile(cliArgs.taskPath);
-  const taskDirectory = path.dirname(path.resolve(cliArgs.taskPath));
+export type RunArgs = {
+  taskPath: string;
+  continue?: { message: string };
+};
+
+export async function run(args: RunArgs) {
+  const task = loadTaskFromFile(args.taskPath);
+  const taskDirectory = path.dirname(path.resolve(args.taskPath));
   log.info("Task loaded:", task.task_name);
   log.debug("Task:", task);
 
-  if (task.notification_channels.includes("discord") && !task.discord_webhook_url) {
-    validateDiscordEnvOrThrow();
+  validateEnvForTask(task);
+
+  let prompt: string | undefined;
+  let previousResponseId: string | undefined;
+
+  if (args.continue) {
+    previousResponseId = getResponseId(task.task_name);
+    if (!previousResponseId) {
+      throw new Error(
+        `No prior conversation found for task "${task.task_name}". Run the task once before continuing.`,
+      );
+    }
+    prompt = args.continue.message;
+    log.info("Continuing conversation", { previousResponseId });
   }
 
-  if (task.tool_names.includes("google_calendar")) {
-    validateGoogleCalendarEnvOrThrow();
-  }
+  await executeAndNotify({ task, taskDirectory, prompt, previousResponseId });
+}
 
-  if (task.tool_names.includes("memories")) {
-    validateMemoriesEnvOrThrow();
-  }
+async function executeAndNotify(props: {
+  task: Task;
+  taskDirectory: string;
+  prompt: string | undefined;
+  previousResponseId: string | undefined;
+}) {
+  const { task, taskDirectory, prompt, previousResponseId } = props;
 
   const tools = buildTools({
     toolNames: task.tool_names,
@@ -39,10 +60,7 @@ export async function run(cliArgs: CliArgsValidated) {
   });
 
   log.time("openai_response");
-  const response = await runTaskResponse({
-    task,
-    tools,
-  });
+  const response = await runTaskResponse({ task, tools, prompt, previousResponseId });
   log.timeEnd("openai_response");
 
   const usage = response.usage;
@@ -53,6 +71,13 @@ export async function run(cliArgs: CliArgsValidated) {
     reasoning: usage?.output_tokens_details?.reasoning_tokens,
     cachedInput: usage?.input_tokens_details?.cached_tokens,
   });
+
+  try {
+    upsertResponseId(task.task_name, response.id);
+    log.debug("Persisted response id", { taskName: task.task_name, responseId: response.id });
+  } catch (err) {
+    log.error("Failed to persist response id; run will continue", err);
+  }
 
   log.time("notifications");
   await sendNotifications({
@@ -69,6 +94,20 @@ export async function run(cliArgs: CliArgsValidated) {
     },
   });
   log.timeEnd("notifications");
+}
+
+function validateEnvForTask(task: Task) {
+  if (task.notification_channels.includes("discord") && !task.discord_webhook_url) {
+    validateDiscordEnvOrThrow();
+  }
+
+  if (task.tool_names.includes("google_calendar")) {
+    validateGoogleCalendarEnvOrThrow();
+  }
+
+  if (task.tool_names.includes("memories")) {
+    validateMemoriesEnvOrThrow();
+  }
 }
 
 function getNotificationLogFilePath(params: {

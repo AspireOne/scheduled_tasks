@@ -8,3 +8,4 @@ dist/
 .tasks/
 *.log
 run-task.sh
+data/

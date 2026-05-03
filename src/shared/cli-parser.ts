@@ -5,12 +5,16 @@ export function parseCliArgs(args: string[]) {
     args: args.slice(2), // strip "node" and script path
     options: {
       "task-path": { type: "string", short: "c" },
+      continue: { type: "boolean", default: false },
+      message: { type: "string", short: "m" },
     },
     allowPositionals: true,
   });
 
   return {
     taskPath: values["task-path"],
+    continue: values.continue ?? false,
+    message: values.message,
     positionals,
   };
 }
@@ -19,7 +23,19 @@ export function validateCliArgsOrThrow(args: CliArgsParsed): asserts args is Cli
   if (!args.taskPath || args.taskPath.length === 0) {
     throw new Error("You must pass task path.");
   }
+
+  if (args.continue && (!args.message || args.message.length === 0)) {
+    throw new Error("--continue requires --message <text>.");
+  }
 }
 
 type CliArgsParsed = ReturnType<typeof parseCliArgs>;
-export type CliArgsValidated = Omit<CliArgsParsed, "taskPath"> & { taskPath: string };
+
+type CliArgsBase = {
+  taskPath: string;
+  positionals: string[];
+};
+
+export type CliArgsValidated =
+  | (CliArgsBase & { continue: false; message: string | undefined })
+  | (CliArgsBase & { continue: true; message: string });

@@ -1,5 +1,5 @@
 import { globalConfig } from "./config";
-import { run } from "./runner";
+import { run, type RunArgs } from "./runner";
 import { parseCliArgs, validateCliArgsOrThrow } from "./shared/cli-parser";
 import { validateOpenAIEnvOrThrow } from "./shared/env";
 import { logger, pruneLogFile } from "./shared/logger";
@@ -19,7 +19,10 @@ async function main() {
     log.debug("CLI args:", JSON.stringify(cliArgs));
     validateCliArgsOrThrow(cliArgs);
 
-    await run(cliArgs);
+    const runArgs: RunArgs = cliArgs.continue
+      ? { taskPath: cliArgs.taskPath, continue: { message: cliArgs.message } }
+      : { taskPath: cliArgs.taskPath };
+    await run(runArgs);
   } catch (err) {
     log.error(err);
   }

@@ -13,13 +13,18 @@ const log = logger.withContext("ai-response-runner");
 
 const MAX_RESPONSE_ROUNDS = 50;
 
-export async function runTaskResponse(props: { task: Task; tools: BuiltTools }): Promise<Response> {
+export async function runTaskResponse(props: {
+  task: Task;
+  tools: BuiltTools;
+  prompt?: string | undefined;
+  previousResponseId?: string | undefined;
+}): Promise<Response> {
   const instructions = props.task.system_prompt
     ? augmentWithCurrentDate(props.task.system_prompt)
     : null;
 
-  let previousResponseId: string | undefined;
-  let input: string | ResponseInputItem[] = props.task.prompt;
+  let previousResponseId: string | undefined = props.previousResponseId;
+  let input: string | ResponseInputItem[] = props.prompt ?? props.task.prompt;
 
   for (let round = 1; round <= MAX_RESPONSE_ROUNDS; round += 1) {
     log.debug("Creating OpenAI response", {
