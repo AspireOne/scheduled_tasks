@@ -1,6 +1,6 @@
 import { run } from "./runner";
 import { parseCliArgs, validateCliArgsOrThrow } from "./shared/cli-parser";
-import { validateEnvOrThrow } from "./shared/env";
+import { validateOpenAIEnvOrThrow } from "./shared/env";
 import { logger } from "./shared/logger";
 
 process.loadEnvFile();
@@ -11,7 +11,7 @@ async function main() {
   log.time("run");
 
   try {
-    validateEnvOrThrow();
+    validateOpenAIEnvOrThrow();
 
     const cliArgs = parseCliArgs(process.argv);
     log.debug("CLI args:", JSON.stringify(cliArgs));

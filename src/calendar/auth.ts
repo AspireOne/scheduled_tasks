@@ -1,7 +1,7 @@
 import { getEnv } from "@/shared/env";
 import { logger } from "@/shared/logger";
 
-const log = logger.withContext("google-calendar-auth");
+const log = logger.withContext("calendar-auth");
 
 const GOOGLE_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 const REFRESH_SKEW_MS = 5 * 60 * 1000;
@@ -50,13 +50,11 @@ async function refreshGoogleCalendarAccessToken(): Promise<string> {
 
   for (let attempt = 1; attempt <= MAX_REFRESH_ATTEMPTS; attempt += 1) {
     try {
-      const accessToken = await requestGoogleCalendarAccessToken({
+      return await requestGoogleCalendarAccessToken({
         clientId: env.GOOGLE_CALENDAR_CLIENT_ID,
         clientSecret: env.GOOGLE_CALENDAR_CLIENT_SECRET,
         refreshToken: env.GOOGLE_CALENDAR_REFRESH_TOKEN,
       });
-
-      return accessToken;
     } catch (error) {
       const isFinalAttempt = attempt === MAX_REFRESH_ATTEMPTS;
 

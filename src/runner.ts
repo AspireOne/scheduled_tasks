@@ -1,13 +1,15 @@
-import type { Tool } from "openai/resources/responses/responses.js";
-import { augmentWithCurrentDate } from "./ai/helpers";
-import { openai } from "./ai/openai-client";
+import { runTaskResponse } from "./ai/response-runner";
 import { buildTools } from "./ai/tools";
 import { sendNotifications } from "./notifications";
 import { type CliArgsValidated } from "./shared/cli-parser";
-import { getEnv, validateDiscordEnvOrThrow } from "./shared/env";
-import { getGoogleCalendarAccessToken } from "./shared/google-calendar-auth";
+import {
+  getEnv,
+  validateDiscordEnvOrThrow,
+  validateGoogleCalendarEnvOrThrow,
+  validateMemoriesEnvOrThrow,
+} from "./shared/env";
 import { logger } from "./shared/logger";
-import { loadTaskFromFile, type Task } from "./task";
+import { loadTaskFromFile } from "./task";
 
 const log = logger.withContext("runner");
 
@@ -20,20 +22,24 @@ export async function run(cliArgs: CliArgsValidated) {
     validateDiscordEnvOrThrow();
   }
 
-  log.time("google_calendar_access_token");
-  const googleCalendarAccessToken = task.tool_names.includes("google_calendar")
-    ? await getGoogleCalendarAccessToken()
-    : undefined;
-  log.timeEnd("google_calendar_access_token");
+  if (task.tool_names.includes("google_calendar")) {
+    validateGoogleCalendarEnvOrThrow();
+  }
+
+  if (task.tool_names.includes("memories")) {
+    validateMemoriesEnvOrThrow();
+  }
 
   const tools = buildTools({
     toolNames: task.tool_names,
     webSearchConfig: task.web_search,
-    ...(googleCalendarAccessToken ? { googleCalendarAccessToken } : {}),
   });
 
   log.time("openai_response");
-  const response = await performAiRequest(task, tools);
+  const response = await runTaskResponse({
+    task,
+    tools,
+  });
   log.timeEnd("openai_response");
 
   log.time("notifications");
@@ -46,18 +52,4 @@ export async function run(cliArgs: CliArgsValidated) {
     },
   });
   log.timeEnd("notifications");
-}
-
-async function performAiRequest(task: Task, tools: Tool[]) {
-  return await openai.responses.create({
-    model: task.model,
-    instructions: task.system_prompt ? augmentWithCurrentDate(task.system_prompt) : null,
-    input: task.prompt,
-    tools: tools,
-    reasoning: { effort: task.effort },
-    prompt_cache_retention: "in_memory",
-    parallel_tool_calls: true,
-    truncation: "auto",
-    stream: false,
-  });
 }

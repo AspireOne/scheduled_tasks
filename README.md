@@ -75,7 +75,8 @@ Important behavior:
 
 - `OPENAI_API_KEY` is always required.
 - `DISCORD_WEBHOOK_URL` is required only when a task uses the `discord` notification channel.
-- Google Calendar and memories env vars are currently validated at startup for every run, even if the task does not use those tools.
+- Google Calendar env vars are required only when a task uses `google_calendar`.
+- `MEMORIES_MCP_API_KEY` is required only when a task uses `memories`.
 
 ## Task File
 
@@ -223,9 +224,9 @@ If `web_search` is enabled but this section is omitted, the runner uses:
 
 ### Google Calendar
 
-- uses the Google Calendar MCP connector
+- uses local OpenAI function tools backed by the Google Calendar REST API
 - refreshes an access token from `GOOGLE_CALENDAR_REFRESH_TOKEN`
-- available capabilities include reading, listing, searching, creating, updating, and deleting events
+- available capabilities include listing, getting, creating, updating, and deleting events
 
 ### Memories
 
