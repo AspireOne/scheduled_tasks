@@ -3,6 +3,7 @@ model = "gpt-5.4"
 effort = "medium"
 tool_names = ["web_search"]
 notification_channels = ["discord"]
+discord_channel_id = "REPLACE_WITH_CHANNEL_ID"
 prompt = """
 Five interesting conversation starters for the weekend: one science fact, one culture topic, one business news item, one local Czech Republic story, one weird/unusual story
 """

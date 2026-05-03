@@ -13,7 +13,7 @@ export function validateMemoriesEnvOrThrow(): void {
 }
 
 export function validateDiscordEnvOrThrow(): void {
-  assertExistsOrThrow("DISCORD_WEBHOOK_URL");
+  assertExistsOrThrow("DISCORD_BOT_TOKEN");
 }
 
 function assertExistsOrThrow(envKey: string): void {
@@ -29,6 +29,6 @@ export function getEnv() {
     GOOGLE_CALENDAR_CLIENT_ID: process.env["GOOGLE_CALENDAR_CLIENT_ID"]!,
     GOOGLE_CALENDAR_CLIENT_SECRET: process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]!,
     MEMORIES_MCP_API_KEY: process.env["MEMORIES_MCP_API_KEY"]!,
-    DISCORD_WEBHOOK_URL: process.env["DISCORD_WEBHOOK_URL"]!,
+    DISCORD_BOT_TOKEN: process.env["DISCORD_BOT_TOKEN"]!,
   };
 }

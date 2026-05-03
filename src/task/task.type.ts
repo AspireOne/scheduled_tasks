@@ -3,7 +3,7 @@ import type { taskValues } from "./task-values";
 export type Task = {
   task_name: string;
   system_prompt?: string;
-  discord_webhook_url?: string;
+  discord_channel_id?: string;
   prompt: string;
   model: Model | (string & {});
   effort: Effort;

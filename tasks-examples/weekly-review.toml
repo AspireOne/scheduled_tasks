@@ -3,6 +3,7 @@ model = "gpt-5.4"
 effort = "high"
 tool_names = ["memories"]
 notification_channels = ["discord"]
+discord_channel_id = "REPLACE_WITH_CHANNEL_ID"
 prompt = """
 Ask me 5 thoughtful questions to review the past week. One question must ask how I did on the focus I chose for the previous week. The questions should help me identify what drained me / made me anxious, what energized me / made me feel content, what mattered most, and what I want to improve next.
 

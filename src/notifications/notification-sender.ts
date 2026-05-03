@@ -1,5 +1,5 @@
 import type { NotificationChannel } from "@/task";
-import { sendDiscordNotification } from "./discord-notifier";
+import { postDiscordMessage } from "@/discord";
 import { sendLogNotification } from "./log-notifier";
 
 type NotificationPayload = {
@@ -9,14 +9,18 @@ type NotificationPayload = {
 
 export async function sendNotifications(params: {
   channels: NotificationChannel[];
-  discordWebhokUrl: string;
+  discordChannelId: string | undefined;
   logFilePath: string;
   payload: NotificationPayload;
 }): Promise<void> {
   for (const channel of params.channels) {
     switch (channel) {
       case "discord":
-        await sendDiscordNotification(params.payload, params.discordWebhokUrl);
+        await postDiscordMessage({
+          channelId: params.discordChannelId!,
+          taskName: params.payload.taskName,
+          content: params.payload.content,
+        });
         break;
       case "log":
         sendLogNotification({

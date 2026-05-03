@@ -33,8 +33,9 @@ model = "gpt-5.4"
 effort = "high"
 tool_names = ["web_search", "google_calendar", "memories"]
 notification_channels = ["discord", "log"]
-# Optional. Overrides DISCORD_WEBHOOK_URL for this specific task.
-discord_webhook_url = "https://discord.com/api/webhooks/..."
+# Required when "discord" is in notification_channels. Channel the task posts to
+# and (when the bot is running) listens to for replies.
+discord_channel_id = "1234567890"
 
 prompt = """
 Find interesting social events in Brno next week.
@@ -86,6 +87,31 @@ node dist/index.js --task-path .tasks/social-events-research.toml
 ```
 
 `-c` also works as a short form of `--task-path`.
+
+## Conversational Tasks (Discord Bot)
+
+Tasks can be continued via Discord. After a task runs, its Discord message id is stored, and replies in the configured channel are forwarded back to the model as a continuation of the same conversation.
+
+To enable replies:
+
+1. Create a Discord application + bot user, copy the bot token into `DISCORD_BOT_TOKEN` in `.env`.
+2. Invite the bot to your server with permissions to read and send messages in the relevant channels.
+3. Set `discord_channel_id` on each task that should be conversational.
+4. Run the bot process alongside your scheduler:
+
+```bash
+pnpm bot:dev                 # development
+node dist/bot.js             # production (after pnpm exec tsc)
+node dist/bot.js --tasks-dir ./other-tasks  # custom tasks dir (default .tasks)
+```
+
+The bot scans the tasks directory at startup, builds a `channel_id → task` map, and replies to messages in any mapped channel by continuing that task's most recent conversation. Each scheduled run replaces the prior conversation thread.
+
+You can also continue a conversation from the CLI:
+
+```bash
+node dist/index.js --task-path .tasks/weekly-review.toml --continue -m "your reply"
+```
 
 ## Dev Notes
 

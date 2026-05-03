@@ -5,7 +5,6 @@ import { getResponseId, upsertResponseId } from "./conversations";
 import { getDefaultNotificationLogFilePath } from "./notifications/log-notifier";
 import { sendNotifications } from "./notifications";
 import {
-  getEnv,
   validateDiscordEnvOrThrow,
   validateGoogleCalendarEnvOrThrow,
   validateMemoriesEnvOrThrow,
@@ -82,7 +81,7 @@ async function executeAndNotify(props: {
   log.time("notifications");
   await sendNotifications({
     channels: task.notification_channels,
-    discordWebhokUrl: task.discord_webhook_url || getEnv().DISCORD_WEBHOOK_URL,
+    discordChannelId: task.discord_channel_id,
     logFilePath: getNotificationLogFilePath({
       taskDirectory,
       taskName: task.task_name,
@@ -97,7 +96,7 @@ async function executeAndNotify(props: {
 }
 
 function validateEnvForTask(task: Task) {
-  if (task.notification_channels.includes("discord") && !task.discord_webhook_url) {
+  if (task.notification_channels.includes("discord")) {
     validateDiscordEnvOrThrow();
   }
 

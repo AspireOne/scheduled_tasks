@@ -3,6 +3,7 @@ model = "gpt-5.4"
 effort = "medium"
 tool_names = []
 notification_channels = ["discord"]
+discord_channel_id = "REPLACE_WITH_CHANNEL_ID"
 prompt = """
 Suggest one small, affordable thing I can do this coming weekend to make life feel richer (for example: food, walk, music, bookshop, bath, museum, view, letter, ritual, or mini-adventure).
 

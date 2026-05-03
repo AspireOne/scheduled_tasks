@@ -3,6 +3,7 @@ model = "gpt-5.4"
 effort = "medium"
 tool_names = ["web_search", "memories"]
 notification_channels = ["discord", "log"]
+discord_channel_id = "REPLACE_WITH_CHANNEL_ID"
 system_prompt = """
 You are running as a scheduled task.
 Use the current date as the anchor for any relative timing references.

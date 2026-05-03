@@ -39,7 +39,7 @@ const validationRules: Record<keyof Task, RuleProperties> = {
     required: true,
   },
   web_search: {},
-  discord_webhook_url: {},
+  discord_channel_id: {},
 };
 
 export function validateTask(task: Task): Result {
@@ -52,6 +52,7 @@ export function validateTask(task: Task): Result {
   validateValues(task, errors, warnings);
   validateLengthConstraints(task, errors);
   validateNotificationConfig(task, errors);
+  validateDiscordChannelId(task, errors);
 
   const success = errors.length === 0;
   return { success, errors, warnings };
@@ -127,6 +128,14 @@ function validateNotificationConfig(task: Task, errors: string[]): void {
 
   if (task.notifications.log.file_path.length === 0) {
     errors.push("notifications.log.file_path must not be empty");
+  }
+}
+
+function validateDiscordChannelId(task: Task, errors: string[]): void {
+  if (!task.notification_channels.includes("discord")) return;
+
+  if (!task.discord_channel_id || task.discord_channel_id.length === 0) {
+    errors.push('discord_channel_id is required when "discord" is in notification_channels');
   }
 }
 
