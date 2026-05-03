@@ -6,3 +6,4 @@ dist/
 .env.*
 .tasks
 scheduled_tasks.log
+logs/
