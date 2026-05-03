@@ -2,30 +2,30 @@
 
 ## Project Structure & Module Organization
 
-Core application code lives in `src/`. Use `src/index.ts` as the CLI entrypoint, `src/runner.ts` for task execution, `src/ai/` for OpenAI client and tool wiring, `src/task/` for TOML task loading and validation, and `src/shared/` for CLI, env, logging, and utility helpers. Compiled output goes to `dist/`. Task definitions are expected as TOML files passed with `--task-path`; keep reusable task files under `.tasks/`. Reference material such as [`flow_diagram.png`](./flow_diagram.png) and the high-level overview live at the repo root.
+`src/` contains the runtime code, split by domain: `ai/`, `calendar/`, `notifications/`, `task/`, and `shared/`. Entry points live in `src/index.ts` and `src/runner.ts`. Compiled output is written to `dist/`; treat it as generated code. Task examples and local inputs belong in `.tasks/`. Repository docs live in `README.md`, and `flow_diagram.png` provides a high-level reference.
 
 ## Build, Test, and Development Commands
 
-Install dependencies with `pnpm install`.
-
-- `pnpm lint` runs ESLint across the repo.
-- `pnpm typecheck` runs `tsc --noEmit` with strict settings.
-- `pnpm knip` reports unused files, exports, and dependencies.
-- `pnpm format` rewrites files with Prettier.
-- `pnpm format:check` verifies formatting without changing files.
+- `pnpm install` installs dependencies.
 - `pnpm exec tsc` builds TypeScript into `dist/`.
-- `node dist/index.js --task-path .tasks/example.toml` runs a compiled task locally.
-
-Husky pre-commit hooks already run Prettier on staged files plus `lint`, `knip`, and `typecheck` in parallel.
+- `pnpm lint` runs ESLint across the repo.
+- `pnpm typecheck` runs `tsc --noEmit` for strict type validation.
+- `pnpm knip` checks for unused files, exports, and dependencies.
+- `pnpm format` applies Prettier; `pnpm format:check` verifies formatting.
+- `node dist/index.js --task-path .tasks/example.toml` runs one scheduled task locally after build.
 
 ## Coding Style & Naming Conventions
 
-This project uses TypeScript with ES modules and strict compiler checks. Follow the existing Prettier config: 100-column width, semicolons, double quotes, and trailing commas. Use 2-space indentation. Prefer `type` imports where possible; ESLint warns on inconsistent imports and unused variables unless prefixed with `_`. Keep filenames lowercase with hyphens only where already established; match the current patterns such as `task-loader.ts`, `openai-client.ts`, and `task.type.ts`.
+This is a strict TypeScript project using ES modules. Use Prettier defaults from `.prettierrc.json`: 2-space indentation, semicolons, double quotes, trailing commas, and a 100-character line width. Keep modules focused by domain, prefer `kebab-case` file names such as `task-loader.ts`, and use `index.ts` only for clear module entry points. ESLint warns on `console`, unused variables, and enforces consistent type imports; prefer inline `type` imports and prefix intentionally unused parameters with `_`.
 
 ## Testing Guidelines
 
-There is no automated test suite yet; `pnpm test` is currently a placeholder and should not be treated as a quality gate. For now, validate changes with `pnpm lint`, `pnpm typecheck`, and `pnpm knip`, then run a representative task file through the built CLI. When adding tests later, place them alongside the feature or in a dedicated test directory and name them clearly after the module under test.
+There is no dedicated test suite yet. Until one exists, treat `pnpm lint`, `pnpm typecheck`, and `pnpm knip` as the minimum verification set before opening a PR. If you add tests, keep them near the code they cover or in a small, clearly named test directory, and make the execution command explicit in `package.json`.
 
 ## Commit & Pull Request Guidelines
 
-Recent history uses Conventional Commits such as `feat(ai): ...`, `refactor(task): ...`, and `chore: ...`. Keep using that format, optionally with a scope, and include a commit body. Stage and commit only the files relevant to your change. Pull requests should describe behavior changes, note any task or env updates, link related issues, and include sample task input or output when the change affects runtime behavior.
+Follow the existing Conventional Commit style seen in history, for example `feat(calendar): replace mcp calendar integration with direct api tools`. Include a body in every commit and stage only the files relevant to your change. PRs should explain the behavioral change, note any required env vars or task-file updates, and include a concrete validation summary such as `pnpm lint && pnpm typecheck && pnpm knip`.
+
+## Security & Configuration Tips
+
+Keep secrets in `.env` only; never commit API keys, refresh tokens, or webhook URLs. When changing task loading, tool wiring, or notifications, update `README.md` so supported TOML fields and required environment variables stay accurate.
