@@ -1,0 +1,40 @@
+task_name = "Research sociálních eventů v Brně"
+model = "gpt-5.4"
+effort = "high"
+tool_names = ["web_search", "google_calendar", "memories"]
+notification_channels = ["log"]
+system_prompt = """
+You are running as a scheduled task.
+Use the current date as the anchor for any relative timing references.
+Dej si na čas.
+"""
+prompt = """
+**Research:**
+Jaké akce nebo události se konají příští týden v Brně? Nebo kam bych mohl jen tak zajít (nejen pátek a víkend, ale klidně i přes týden)? Bydlím v Brně a chci se víc angažovat, a taky víc socializovat, ideálně poznat nové lidi (ideálně mého věku) atd. pokud je příležitost.
+
+**Hledání:**
+běžně vyhledávače často nezobrazují menší akce, nebo zobrazují staré. Hodně se toho děje na Facebook Events a skupinách, nástěnky a spolky univerzit apod. mnoho různých možných zdrojů...
+
+**Kalendář:**
+Jakmile uděláš research a najdeš události (pokud nějaké), přidej mi je do kalendáře pomocí Google Calendar nástroje, který máš dostupný (zkontroluj, jestli už tam ty akce already nejsou), abych nezapomněl! Do popisku mi dej kontext - víc je líp, ale dej tam i tl;dr verzi jako první, a pokud možno, dej tam i link na appropriate web. Pokud do kalendáře nelze přímo zapsat, jen to vypiš ve stylu kalendářních eventů.
+
+**notes.txt:**
+viz supplied informace, tldr živý dokument, můžeš vněm udržovat informace pro budoucí researche
+
+---
+
+Dej si na čas.
+
+Použij MCP nástroj Internal note management a space_id "social_events_space". Tady můžeš číst a upravovat notes.txt soubor. Když ho updatuješ, nezapomeň, že je to ve formě overwrite - musíš poskytnout celý nový obsah.
+"""
+
+[notifications.log]
+file_path = "../logs/social-events-research.notifications.log"
+
+[web_search]
+search_context_size = "high"
+
+[web_search.user_location]
+type = "approximate"
+country = "CZ"
+city = "Brno"

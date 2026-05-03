@@ -1,32 +1,24 @@
 export function validateOpenAIEnvOrThrow(): void {
-  if (!process.env["OPENAI_API_KEY"]) {
-    throw new Error("OPENAI_API_KEY env variable must be present");
-  }
+  assertExistsOrThrow("OPENAI_API_KEY");
 }
 
 export function validateGoogleCalendarEnvOrThrow(): void {
-  if (!process.env["GOOGLE_CALENDAR_REFRESH_TOKEN"]) {
-    throw new Error("GOOGLE_CALENDAR_REFRESH_TOKEN env variable must be present");
-  }
-
-  if (!process.env["GOOGLE_CALENDAR_CLIENT_ID"]) {
-    throw new Error("GOOGLE_CALENDAR_CLIENT_ID env variable must be present");
-  }
-
-  if (!process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]) {
-    throw new Error("GOOGLE_CALENDAR_CLIENT_SECRET env variable must be present");
-  }
+  assertExistsOrThrow("GOOGLE_CALENDAR_REFRESH_TOKEN");
+  assertExistsOrThrow("GOOGLE_CALENDAR_CLIENT_ID");
+  assertExistsOrThrow("GOOGLE_CALENDAR_CLIENT_SECRET");
 }
 
 export function validateMemoriesEnvOrThrow(): void {
-  if (!process.env["MEMORIES_MCP_API_KEY"]) {
-    throw new Error("MEMORIES_MCP_API_KEY env variable must be present");
-  }
+  assertExistsOrThrow("MEMORIES_MCP_API_KEY");
 }
 
 export function validateDiscordEnvOrThrow(): void {
-  if (!process.env["DISCORD_WEBHOOK_URL"]) {
-    throw new Error("DISCORD_WEBHOOK_URL env variable must be present");
+  assertExistsOrThrow("DISCORD_WEBHOOK_URL");
+}
+
+function assertExistsOrThrow(envKey: string): void {
+  if (!process.env[envKey]) {
+    throw new Error(`${envKey} env variable must be present.`);
   }
 }
 

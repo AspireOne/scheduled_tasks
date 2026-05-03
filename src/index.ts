@@ -1,3 +1,4 @@
+import { globalConfig } from "./config";
 import { run } from "./runner";
 import { parseCliArgs, validateCliArgsOrThrow } from "./shared/cli-parser";
 import { validateOpenAIEnvOrThrow } from "./shared/env";
@@ -7,7 +8,7 @@ process.loadEnvFile();
 const log = logger.withContext("index");
 
 async function main() {
-  pruneLogFile();
+  pruneLogFile(globalConfig.maxLogLines);
   log.info("==================== Run started ====================");
   log.time("run");
 

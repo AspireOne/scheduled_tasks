@@ -48,8 +48,6 @@ const logConfig = {
   filePath: path.resolve("scheduled_tasks.log"),
 };
 
-const DEFAULT_MAX_LOG_LINES = 10_000;
-
 /**
  * Set the log file path. Must be called before any log statements.
  * The directory must already exist; the file itself is created if absent.
@@ -60,7 +58,7 @@ function _setLogFilePath(filePath: string): void {
   logConfig.filePath = path.resolve(filePath);
 }
 
-export function pruneLogFile(maxLines: number = DEFAULT_MAX_LOG_LINES): void {
+export function pruneLogFile(maxLines: number): void {
   try {
     const content = fs.readFileSync(logConfig.filePath, "utf8");
     const lines = content.split(/\r?\n/);

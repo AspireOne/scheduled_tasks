@@ -1,5 +1,5 @@
 import { logger } from "@/shared/logger";
-import { chunkDiscordMessage } from "./discord-message-chunker";
+import { chunkDiscordMessage, DISCORD_MESSAGE_LIMIT } from "./discord-message-chunker";
 
 const log = logger.withContext("discord-notifier");
 
@@ -45,7 +45,7 @@ function buildDiscordMessages(payload: NotificationPayload): string[] {
     return [`${header}\n\nTask finished without any text output.`];
   }
 
-  const firstMessageContentLimit = 1_800 - `${header}\n\n`.length;
+  const firstMessageContentLimit = DISCORD_MESSAGE_LIMIT - `${header}\n\n`.length;
   const firstBodyChunk = content.slice(0, firstMessageContentLimit);
   const remainingContent = content.slice(firstMessageContentLimit);
   const remainingChunks = chunkDiscordMessage(remainingContent);

@@ -21,12 +21,7 @@ export type Task = {
   };
 };
 
-export type TaskNotifications = {
-  log?: {
-    file_path?: string;
-  };
-};
-
+export type TaskNotifications = { log?: { file_path?: string } };
 export type Effort = (typeof taskValues.efforts)[number];
 export type Model = (typeof taskValues.models)[number];
 export type ToolName = (typeof taskValues.toolNames)[number];

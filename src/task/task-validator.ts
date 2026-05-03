@@ -1,6 +1,9 @@
 import type { Result } from "@/shared/types";
 import type { Task } from "./task.type";
 import { taskValues } from "./task-values";
+import { logger } from "@/shared/logger";
+
+const log = logger.withContext("task-validator");
 
 type RuleProperties = {
   required?: boolean;
@@ -90,7 +93,6 @@ function validateLengthConstraints(task: Task, errors: string[]): void {
     if (value == null) continue;
 
     if (typeof value !== "string") {
-      // TODO: Log a logic error when logger exists.
       continue;
     }
 
