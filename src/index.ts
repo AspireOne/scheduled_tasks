@@ -1,12 +1,13 @@
 import { run } from "./runner";
 import { parseCliArgs, validateCliArgsOrThrow } from "./shared/cli-parser";
 import { validateOpenAIEnvOrThrow } from "./shared/env";
-import { logger } from "./shared/logger";
+import { logger, pruneLogFile } from "./shared/logger";
 
 process.loadEnvFile();
 const log = logger.withContext("index");
 
 async function main() {
+  pruneLogFile();
   log.info("==================== Run started ====================");
   log.time("run");
 
@@ -23,7 +24,7 @@ async function main() {
   }
 
   log.timeEnd("run");
-  log.info("Run ended\n\n\n");
+  log.info("==================== Run ended ====================\n\n\n");
 }
 
 // TODO: Do we need to await?

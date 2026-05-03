@@ -48,6 +48,8 @@ const logConfig = {
   filePath: path.resolve("scheduled_tasks.log"),
 };
 
+const DEFAULT_MAX_LOG_LINES = 10_000;
+
 /**
  * Set the log file path. Must be called before any log statements.
  * The directory must already exist; the file itself is created if absent.
@@ -56,6 +58,26 @@ const logConfig = {
  */
 function _setLogFilePath(filePath: string): void {
   logConfig.filePath = path.resolve(filePath);
+}
+
+export function pruneLogFile(maxLines: number = DEFAULT_MAX_LOG_LINES): void {
+  try {
+    const content = fs.readFileSync(logConfig.filePath, "utf8");
+    const lines = content.split(/\r?\n/);
+
+    if (lines.at(-1) === "") {
+      lines.pop();
+    }
+
+    if (lines.length <= maxLines) {
+      return;
+    }
+
+    const prunedContent = `${lines.slice(-maxLines).join("\n")}\n`;
+    fs.writeFileSync(logConfig.filePath, prunedContent, "utf8");
+  } catch {
+    // Best-effort: if the file cannot be read or written, do not crash.
+  }
 }
 
 type LogLevel = "LOG" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "TRACE";
