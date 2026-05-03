@@ -25,7 +25,7 @@ It's useful for both one-off tasks (you can leverage notifications, tools like g
 
 See more example tasks live in [`tasks-examples/`](./tasks-examples/).
 
-`/WEEKLY_SOCIAL_EVENTS.md`:
+`/social-events-research.toml`:
 
 ```toml
 task_name = "Weekly Brno social events"
@@ -70,7 +70,7 @@ Install dependencies: `pnpm install`
 Run directly:
 
 ```bash
-pnpm dlx tsx src/index.ts --task-path .tasks/WEEKLY_SOCIAL_EVENTS.toml
+pnpm dlx tsx src/index.ts --task-path .tasks/social-events-research.toml
 ```
 
 Or build the project:
@@ -82,7 +82,7 @@ pnpm exec tsc
 And then:
 
 ```bash
-node dist/index.js --task-path .tasks/WEEKLY_SOCIAL_EVENTS.toml
+node dist/index.js --task-path .tasks/social-events-research.toml
 ```
 
 `-c` also works as a short form of `--task-path`.
