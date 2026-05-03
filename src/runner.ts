@@ -1,7 +1,9 @@
 import { augmentWithCurrentDate } from "./ai/helpers";
 import { openai } from "./ai/openai-client";
 import { buildTools } from "./ai/tools";
+import { sendNotifications } from "./notifications";
 import { type CliArgsValidated } from "./shared/cli-parser";
+import { validateDiscordEnvOrThrow } from "./shared/env";
 import { getGoogleCalendarAccessToken } from "./shared/google-calendar-auth";
 import { logger } from "./shared/logger";
 import { loadTaskFromFile } from "./task";
@@ -10,6 +12,10 @@ const log = logger.withContext("runner");
 
 export async function run(cliArgs: CliArgsValidated) {
   const task = loadTaskFromFile(cliArgs.taskPath);
+  if (task.notification_channels.includes("discord")) {
+    validateDiscordEnvOrThrow();
+  }
+
   const googleCalendarAccessToken = task.tool_names.includes("google_calendar")
     ? await getGoogleCalendarAccessToken()
     : undefined;
@@ -31,5 +37,11 @@ export async function run(cliArgs: CliArgsValidated) {
     truncation: "auto",
   });
 
-  log.info("Response:", response.output_text);
+  await sendNotifications({
+    channels: task.notification_channels,
+    payload: {
+      taskName: task.task_name,
+      content: response.output_text,
+    },
+  });
 }

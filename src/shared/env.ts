@@ -20,6 +20,12 @@ export function validateEnvOrThrow(): void {
   }
 }
 
+export function validateDiscordEnvOrThrow(): void {
+  if (!process.env["DISCORD_WEBHOOK_URL"]) {
+    throw new Error("DISCORD_WEBHOOK_URL env variable must be present");
+  }
+}
+
 export function getEnv() {
   return {
     OPENAI_API_KEY: process.env["OPENAI_API_KEY"]!,
@@ -27,5 +33,6 @@ export function getEnv() {
     GOOGLE_CALENDAR_CLIENT_ID: process.env["GOOGLE_CALENDAR_CLIENT_ID"]!,
     GOOGLE_CALENDAR_CLIENT_SECRET: process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]!,
     MEMORIES_MCP_API_KEY: process.env["MEMORIES_MCP_API_KEY"]!,
+    DISCORD_WEBHOOK_URL: process.env["DISCORD_WEBHOOK_URL"]!,
   };
 }

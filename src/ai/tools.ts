@@ -70,10 +70,10 @@ function buildGoogleCalendarTool(accessToken: string) {
 function buildNoteManagementTool() {
   return {
     type: "mcp",
-    server_label: "memories_mcp",
+    server_label: "note_management",
     server_description: "Internal note management / memories tool",
     server_url: "https://note-management-mcp.matejpesl.cz/mcp",
-    authorization: `Bearer ${getEnv().MEMORIES_MCP_API_KEY}`,
+    authorization: getEnv().MEMORIES_MCP_API_KEY,
     require_approval: "never",
     defer_loading: false,
   } as const;
