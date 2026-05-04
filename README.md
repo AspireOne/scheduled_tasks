@@ -105,7 +105,7 @@ node dist/bot.js             # production (after pnpm exec tsc)
 node dist/bot.js --tasks-dir ./other-tasks  # custom tasks dir (default .tasks)
 ```
 
-The bot scans the tasks directory at startup, builds a `channel_id → task` map, and replies to messages in any mapped channel by continuing that task's most recent conversation. Each scheduled run replaces the prior conversation thread.
+The bot scans the tasks directory at startup and builds a `channel_id → task` map for channels that are uniquely assigned. If multiple tasks share the same `discord_channel_id`, the bot ignores replies in that channel. Each scheduled run replaces the prior conversation thread.
 
 You can also continue a conversation from the CLI:
 

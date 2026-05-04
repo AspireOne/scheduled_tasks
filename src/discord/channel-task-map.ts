@@ -15,6 +15,7 @@ export function buildChannelTaskMap(tasksDir: string): ChannelTaskMap {
   }
 
   const map: ChannelTaskMap = new Map();
+  const ambiguousChannelIds = new Set<string>();
   const entries = fs.readdirSync(resolvedDir);
 
   for (const entry of entries) {
@@ -32,11 +33,22 @@ export function buildChannelTaskMap(tasksDir: string): ChannelTaskMap {
 
     if (!task.discord_channel_id) continue;
 
+    if (ambiguousChannelIds.has(task.discord_channel_id)) {
+      continue;
+    }
+
     const existing = map.get(task.discord_channel_id);
     if (existing) {
-      throw new Error(
-        `Channel id ${task.discord_channel_id} is mapped to multiple tasks: "${existing.taskName}" and "${task.task_name}". Each Discord channel must serve a single task.`,
+      ambiguousChannelIds.add(task.discord_channel_id);
+      map.delete(task.discord_channel_id);
+      log.warn(
+        `Channel id ${task.discord_channel_id} is mapped to multiple tasks, so Discord replies are disabled for that channel.`,
+        {
+          channelId: task.discord_channel_id,
+          taskNames: [existing.taskName, task.task_name],
+        },
       );
+      continue;
     }
 
     map.set(task.discord_channel_id, {
