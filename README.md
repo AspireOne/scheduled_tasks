@@ -4,7 +4,7 @@ Run AI tasks from TOML files.
 
 This project lets you define AI tasks as simple config files (see below).
 
-It's useful for both one-off tasks (you can leverage notifications, tools like google calendar / web search / memories etc. easily), and recurring tasks. Example usecases when paired with a scheduler/cron:
+It's useful for both one-off tasks (you can leverage notifications, tools like google calendar / web search / memories etc. easily), and recurring tasks. Example use cases:
 
 - Weekly local discovery prompts for Brno: overlooked seasonal spots, views, cafés, walks, exhibitions, and one place worth visiting.
 - Small positive check-ins: one good news item and one affordable weekend idea to make life feel richer.
@@ -18,8 +18,9 @@ It's useful for both one-off tasks (you can leverage notifications, tools like g
 ## How It Works
 
 1. You write a TOML task file.
-2. Your scheduler runs this project with `--task-path`.
-3. The runner loads the task, calls the OpenAI Responses API and handles all the underlying stuff, and forwards the final output to the configured notification channels.
+2. For a one-off run, you invoke the runner with `--task-path`.
+3. For recurring runs, you keep a long-running process running; the scheduler scans the task directory at boot and schedules every task with a `cron` field.
+4. When a task fires, the runner loads it, calls the OpenAI Responses API, and forwards the final output to the configured notification channels.
 
 ## Example Config
 
@@ -29,6 +30,7 @@ See more example tasks live in [`tasks-examples/`](./tasks-examples/).
 
 ```toml
 task_name = "Weekly Brno social events"
+cron = "0 9 * * 1"
 model = "gpt-5.4"
 effort = "high"
 tool_names = ["web_search", "google_calendar", "memories"]
@@ -47,6 +49,9 @@ system_prompt = """
 You are running as a scheduled task.
 Be concise, practical, and avoid repeating past recommendations if memory helps.
 """
+
+# Optional. Standard 5-field cron expression used by the always-on bot process.
+# Example above: every Monday at 09:00 in the server's local time zone.
 
 # Optional: notification-specific config.
 [notifications.log]
@@ -68,7 +73,7 @@ region = "South Moravian"
 
 Install dependencies: `pnpm install`
 
-Run directly:
+Run one task directly:
 
 ```bash
 pnpm dlx tsx src/index.ts --task-path .tasks/social-events-research.toml
@@ -88,6 +93,45 @@ node dist/index.js --task-path .tasks/social-events-research.toml
 
 `-c` also works as a short form of `--task-path`.
 
+## Recommended Commands
+
+For day-to-day local use with `tsx`:
+
+```bash
+pnpm dlx tsx src/index.ts --task-path .tasks/my-task.toml
+pnpm dlx tsx src/scheduler.ts
+pnpm dlx tsx src/bot.ts
+pnpm dlx tsx src/server.ts
+```
+
+Use `src/scheduler.ts` for cron only, `src/bot.ts` for Discord only, and `src/server.ts` to run both together.
+
+## Long-Running Modes
+
+There are three supported long-running modes:
+
+1. Scheduler only: scans the tasks directory and runs cron-enabled tasks.
+2. Bot only: listens for Discord replies and continues conversational tasks.
+3. Combined server: runs both in one process.
+
+Run them like this:
+
+```bash
+pnpm dlx tsx src/scheduler.ts                   # scheduler only, development
+node dist/scheduler.js                          # scheduler only, production
+
+pnpm dlx tsx src/bot.ts                         # Discord bot only, development
+node dist/bot.js                                # Discord bot only, production
+
+pnpm dlx tsx src/server.ts                      # scheduler + bot, development
+node dist/server.js                             # scheduler + bot, production
+node dist/server.js --mode scheduler            # explicit scheduler-only mode
+node dist/server.js --mode bot                  # explicit bot-only mode
+node dist/server.js --tasks-dir ./other-tasks   # custom tasks dir (default .tasks)
+```
+
+`src/scheduler.ts` and `src/bot.ts` are just thin dedicated entrypoints. `src/server.ts` is the combined entrypoint and defaults to `--mode all`.
+
 ## Conversational Tasks (Discord Bot)
 
 Tasks can be continued via Discord. After a task runs, its Discord message id is stored, and replies in the configured channel are forwarded back to the model as a continuation of the same conversation.
@@ -97,15 +141,27 @@ To enable replies:
 1. Create a Discord application + bot user, copy the bot token into `DISCORD_BOT_TOKEN` in `.env`.
 2. Invite the bot to your server with permissions to read and send messages in the relevant channels.
 3. Set `discord_channel_id` on each task that should be conversational.
-4. Run the bot process alongside your scheduler:
+4. Run the bot process, or the combined server if you also want cron scheduling in the same process.
 
-```bash
-pnpm bot:dev                 # development
-node dist/bot.js             # production (after pnpm exec tsc)
-node dist/bot.js --tasks-dir ./other-tasks  # custom tasks dir (default .tasks)
+The combined server scans the tasks directory at startup and:
+
+1. schedules every task with a `cron` expression
+2. builds a `channel_id → task` map for channels that are uniquely assigned
+
+If multiple tasks share the same `discord_channel_id`, the bot ignores replies in that channel. If a cron-triggered task is still running when its next scheduled time arrives, that overlapping run is skipped. Each scheduled run replaces the prior conversation thread.
+
+Cron uses standard 5-field expressions in the server's local time zone:
+
+```text
+* * * * *
+- - - - -
+| | | | |
+| | | | day of week (0-7, Sunday is 0 or 7)
+| | | month (1-12)
+| | day of month (1-31)
+| hour (0-23)
+minute (0-59)
 ```
-
-The bot scans the tasks directory at startup and builds a `channel_id → task` map for channels that are uniquely assigned. If multiple tasks share the same `discord_channel_id`, the bot ignores replies in that channel. Each scheduled run replaces the prior conversation thread.
 
 You can also continue a conversation from the CLI:
 

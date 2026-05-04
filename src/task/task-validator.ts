@@ -1,9 +1,7 @@
 import type { Result } from "@/shared/types";
 import type { Task } from "./task.type";
 import { taskValues } from "./task-values";
-import { logger } from "@/shared/logger";
-
-const log = logger.withContext("task-validator");
+import cron from "node-cron";
 
 type RuleProperties = {
   required?: boolean;
@@ -19,6 +17,10 @@ const validationRules: Record<keyof Task, RuleProperties> = {
   },
   system_prompt: {
     maxLength: 30_000,
+  },
+  cron: {
+    minLength: 1,
+    maxLength: 255,
   },
   task_name: {
     maxLength: 255,
@@ -53,6 +55,7 @@ export function validateTask(task: Task): Result {
   validateLengthConstraints(task, errors);
   validateNotificationConfig(task, errors);
   validateDiscordChannelId(task, errors);
+  validateCron(task, errors);
 
   const success = errors.length === 0;
   return { success, errors, warnings };
@@ -136,6 +139,20 @@ function validateDiscordChannelId(task: Task, errors: string[]): void {
 
   if (!task.discord_channel_id || task.discord_channel_id.length === 0) {
     errors.push('discord_channel_id is required when "discord" is in notification_channels');
+  }
+}
+
+function validateCron(task: Task, errors: string[]): void {
+  if (task.cron == null) return;
+
+  if (typeof task.cron !== "string") {
+    errors.push("cron must be a string");
+    return;
+  }
+
+  const fieldCount = task.cron.trim().split(/\s+/).length;
+  if (fieldCount !== 5 || !cron.validate(task.cron)) {
+    errors.push("cron must be a valid 5-field cron expression");
   }
 }
 

@@ -1,4 +1,5 @@
 task_name = "Weekly review"
+cron = "0 18 * * 0"
 model = "gpt-5.4"
 effort = "high"
 tool_names = ["memories"]

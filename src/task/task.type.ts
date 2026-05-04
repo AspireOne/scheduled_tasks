@@ -2,6 +2,7 @@ import type { taskValues } from "./task-values";
 
 export type Task = {
   task_name: string;
+  cron?: string;
   system_prompt?: string;
   discord_channel_id?: string;
   prompt: string;
