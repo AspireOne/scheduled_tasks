@@ -63,7 +63,26 @@ export function pruneLogFile(maxLines: number): void {
   }
 }
 
-type LogLevel = "LOG" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "TRACE";
+export type LogLevel = "TRACE" | "DEBUG" | "LOG" | "INFO" | "WARN" | "ERROR";
+
+const logLevelPriority: Record<LogLevel, number> = {
+  TRACE: 10,
+  DEBUG: 20,
+  LOG: 30,
+  INFO: 40,
+  WARN: 50,
+  ERROR: 60,
+};
+
+let globalLogLevel: LogLevel = "TRACE";
+
+export function setGlobalLogLevel(level: LogLevel): void {
+  globalLogLevel = level;
+}
+
+function shouldEmit(level: LogLevel): boolean {
+  return logLevelPriority[level] >= logLevelPriority[globalLogLevel];
+}
 
 /**
  * Get current timestamp in hh:mm:ss.t format (t = tenths of a second, 0-9).
@@ -138,6 +157,10 @@ class Logger {
    * @param args   - Arbitrary values the caller wants to log.
    */
   private emit(level: LogLevel, consoleFn: (...args: unknown[]) => void, args: unknown[]): void {
+    if (!shouldEmit(level)) {
+      return;
+    }
+
     const prefix = this.buildPrefix(level);
 
     // Mirror to console with the prefix prepended to the first argument.
@@ -178,6 +201,10 @@ class Logger {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- console.table accepts `any`
   table(data: any, columns?: string[]): void {
+    if (!shouldEmit("LOG")) {
+      return;
+    }
+
     const prefix = this.buildPrefix("LOG");
     console.log(prefix, "Table:");
     console.table(data, columns);
@@ -192,6 +219,10 @@ class Logger {
   private timers: Map<string, number> = new Map();
 
   time(label: string = "default"): void {
+    if (!shouldEmit("LOG")) {
+      return;
+    }
+
     this.timers.set(label, Date.now());
     const prefix = this.buildPrefix("LOG");
     const msg = `Timer started: ${label}`;
@@ -200,6 +231,10 @@ class Logger {
   }
 
   timeEnd(label: string = "default"): void {
+    if (!shouldEmit("LOG")) {
+      return;
+    }
+
     const start = this.timers.get(label);
     const prefix = this.buildPrefix("LOG");
     if (start === undefined) {
@@ -219,12 +254,20 @@ class Logger {
   // ── Groups (console-only; groups have no meaningful file representation) ──
 
   group(...args: unknown[]): void {
+    if (!shouldEmit("LOG")) {
+      return;
+    }
+
     const prefix = this.buildPrefix("LOG");
     console.group(prefix, ...args);
     writeToFile(`${prefix} group: ${args.map(serialize).join(" ")}`);
   }
 
   groupCollapsed(...args: unknown[]): void {
+    if (!shouldEmit("LOG")) {
+      return;
+    }
+
     const prefix = this.buildPrefix("LOG");
     console.groupCollapsed(prefix, ...args);
     writeToFile(`${prefix} groupCollapsed: ${args.map(serialize).join(" ")}`);

@@ -106,6 +106,17 @@ pnpm dlx tsx src/server.ts
 
 Use `src/scheduler.ts` for cron only, `src/bot.ts` for Discord only, and `src/server.ts` to run both together.
 
+To print crontab entries for all cron-enabled tasks in a directory:
+
+```bash
+pnpm dlx tsx src/print-crontab.ts --tasks-dir .tasks
+pnpm print-crontab:dev --tasks-dir .tasks
+```
+
+Each output line contains the task cron expression, the absolute path to `run-task.sh`, and the
+absolute path to the task TOML file. You can redirect the output into a crontab workflow if you
+want to manage scheduling outside the built-in scheduler.
+
 ## Long-Running Modes
 
 There are three supported long-running modes:
