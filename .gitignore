@@ -7,5 +7,5 @@ dist/
 !.env.example
 .tasks/
 *.log
-run-task.sh
+# run-task.sh
 data/
