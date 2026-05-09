@@ -4,8 +4,6 @@ import { startCronScheduler } from "./scheduler/index.js";
 import { validateDiscordEnvOrThrow, validateOpenAIEnvOrThrow } from "./shared/env";
 import { logger, pruneLogFile } from "./shared/logger";
 
-const DEFAULT_TASKS_DIR = ".tasks";
-
 export type ServerMode = "bot" | "scheduler" | "all";
 
 export function parseServerCliArgs(
@@ -18,7 +16,7 @@ export function parseServerCliArgs(
   const { values } = parseArgs({
     args: args.slice(2),
     options: {
-      "tasks-dir": { type: "string", default: DEFAULT_TASKS_DIR },
+      "tasks-dir": { type: "string", default: globalConfig.defaultTasksDir },
       mode: { type: "string", default: defaultMode },
     },
     allowPositionals: false,

@@ -5,7 +5,7 @@ import type {
   ResponseFunctionToolCall,
   ResponseInputItem,
 } from "openai/resources/responses/responses.js";
-import { augmentWithCurrentDate } from "./helpers";
+import { augmentWithCurrentDate, getPromptCacheRetention } from "./helpers";
 import { openai } from "./openai-client";
 import type { BuiltTools } from "./tools";
 
@@ -38,7 +38,7 @@ export async function runTaskResponse(props: {
       input,
       tools: props.tools.tools,
       reasoning: { effort: props.task.effort },
-      prompt_cache_retention: "in_memory",
+      prompt_cache_retention: getPromptCacheRetention(props.task.model),
       parallel_tool_calls: false,
       truncation: "auto",
       stream: false,
