@@ -5,6 +5,7 @@ export function parseCliArgs(args: string[]) {
     args: args.slice(2), // strip "node" and script path
     options: {
       "task-path": { type: "string", short: "c" },
+      defaults: { type: "string" },
       continue: { type: "boolean", default: false },
       message: { type: "string", short: "m" },
     },
@@ -13,6 +14,7 @@ export function parseCliArgs(args: string[]) {
 
   return {
     taskPath: values["task-path"],
+    defaultsPath: values.defaults,
     continue: values.continue ?? false,
     message: values.message,
     positionals,
@@ -33,6 +35,7 @@ type CliArgsParsed = ReturnType<typeof parseCliArgs>;
 
 type CliArgsBase = {
   taskPath: string;
+  defaultsPath: string | undefined;
   positionals: string[];
 };
 

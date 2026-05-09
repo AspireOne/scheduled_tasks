@@ -19,9 +19,12 @@ async function main() {
     log.debug("CLI args:", JSON.stringify(cliArgs));
     validateCliArgsOrThrow(cliArgs);
 
-    const runArgs: RunArgs = cliArgs.continue
-      ? { taskPath: cliArgs.taskPath, continue: { message: cliArgs.message } }
+    const runArgsBase: RunArgs = cliArgs.defaultsPath
+      ? { taskPath: cliArgs.taskPath, defaultsPath: cliArgs.defaultsPath }
       : { taskPath: cliArgs.taskPath };
+    const runArgs: RunArgs = cliArgs.continue
+      ? { ...runArgsBase, continue: { message: cliArgs.message } }
+      : runArgsBase;
     await run(runArgs);
   } catch (err) {
     log.error(err);

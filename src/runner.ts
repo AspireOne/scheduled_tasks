@@ -17,11 +17,14 @@ const log = logger.withContext("runner");
 
 export type RunArgs = {
   taskPath: string;
+  defaultsPath?: string;
   continue?: { message: string };
 };
 
 export async function run(args: RunArgs) {
-  const task = loadTaskFromFile(args.taskPath);
+  const task = args.defaultsPath
+    ? loadTaskFromFile(args.taskPath, { defaultsPath: args.defaultsPath })
+    : loadTaskFromFile(args.taskPath);
   const taskDirectory = path.dirname(path.resolve(args.taskPath));
   log.info("Task loaded:", task.task_name);
   log.debug("Task:", task);

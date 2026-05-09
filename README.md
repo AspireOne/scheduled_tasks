@@ -93,6 +93,16 @@ node dist/index.js --task-path .tasks/social-events-research.toml
 
 `-c` also works as a short form of `--task-path`.
 
+You can also pass a default task config:
+
+```bash
+pnpm dlx tsx src/index.ts --task-path .tasks/my-task.toml --defaults .tasks/defaults.toml
+```
+
+Defaults files use the same TOML format as task files. Values from the task file always win, and
+missing task values are filled from the defaults file. Nested tables are deep-merged, while arrays
+replace the default array instead of concatenating with it.
+
 ## Recommended Commands
 
 For day-to-day local use with `tsx`:
