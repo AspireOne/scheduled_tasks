@@ -2,17 +2,19 @@
 
 set -eu
 
-export HOME=/home/aspire
-export NVM_DIR="$HOME/.nvm"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$SCRIPT_DIR"
 
-# Temporarily disable nounset while loading nvm.
-set +u
-. "$NVM_DIR/nvm.sh"
-set -u
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
-cd /home/aspire/dev/scheduled_tasks
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  # Temporarily disable nounset while loading nvm.
+  set +u
+  . "$NVM_DIR/nvm.sh"
+  set -u
 
-nvm use --silent
+  nvm use --silent
+fi
 
 if [ "$#" -ge 2 ]; then
   exec pnpm exec tsx src/index.ts --task-path "$1" --defaults "$2"
