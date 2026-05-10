@@ -71,6 +71,7 @@ async function handleMessage(params: {
     });
     await run({
       taskPath: mapping.taskPath,
+      ...(mapping.defaultsPath ? { defaultsPath: mapping.defaultsPath } : {}),
       continue: { message: message.content },
     });
   } catch (err) {

@@ -3,13 +3,19 @@ import { logger } from "@/shared/logger";
 
 const log = logger.withContext("discord-channel-task-map");
 
-export type ChannelTaskMap = Map<string, { taskName: string; taskPath: string }>;
+export type ChannelTaskMap = Map<
+  string,
+  { taskName: string; taskPath: string; defaultsPath?: string }
+>;
 
-export function buildChannelTaskMap(tasksDir: string): ChannelTaskMap {
+export function buildChannelTaskMap(
+  tasksDir: string,
+  options?: BuildChannelTaskMapOptions,
+): ChannelTaskMap {
   const map: ChannelTaskMap = new Map();
   const ambiguousChannelIds = new Set<string>();
 
-  for (const { task, taskPath } of loadTasksFromDirectory(tasksDir)) {
+  for (const { task, taskPath, defaultsPath } of loadTasksFromDirectory(tasksDir, options)) {
     if (!task.discord_channel_id) continue;
 
     if (ambiguousChannelIds.has(task.discord_channel_id)) {
@@ -30,12 +36,18 @@ export function buildChannelTaskMap(tasksDir: string): ChannelTaskMap {
       continue;
     }
 
-    map.set(task.discord_channel_id, {
+    const channelTask = {
       taskName: task.task_name,
       taskPath,
-    });
+      ...(defaultsPath ? { defaultsPath } : {}),
+    };
+    map.set(task.discord_channel_id, channelTask);
   }
 
   log.info(`Built channel→task map with ${map.size} entries from ${tasksDir}`);
   return map;
 }
+
+type BuildChannelTaskMapOptions = {
+  defaultsPath?: string;
+};

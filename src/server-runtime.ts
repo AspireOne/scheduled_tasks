@@ -11,12 +11,14 @@ export function parseServerCliArgs(
   defaultMode: ServerMode,
 ): {
   tasksDir: string;
+  defaultsPath: string | undefined;
   mode: ServerMode;
 } {
   const { values } = parseArgs({
     args: args.slice(2),
     options: {
       "tasks-dir": { type: "string", default: globalConfig.defaultTasksDir },
+      defaults: { type: "string" },
       mode: { type: "string", default: defaultMode },
     },
     allowPositionals: false,
@@ -29,22 +31,24 @@ export function parseServerCliArgs(
 
   return {
     tasksDir: values["tasks-dir"],
+    defaultsPath: values.defaults,
     mode,
   };
 }
 
 export async function startServerRuntime(params: {
   tasksDir: string;
+  defaultsPath?: string;
   mode: ServerMode;
   logContext: string;
   startMessage: string;
 }): Promise<void> {
-  const { tasksDir, mode, logContext, startMessage } = params;
+  const { tasksDir, defaultsPath, mode, logContext, startMessage } = params;
   const log = logger.withContext(logContext);
 
   pruneLogFile(globalConfig.maxLogLines);
   log.info(startMessage);
-  log.info("Using tasks dir", { tasksDir, mode });
+  log.info("Using tasks dir", { tasksDir, defaultsPath, mode });
 
   validateOpenAIEnvOrThrow();
 
@@ -53,12 +57,15 @@ export async function startServerRuntime(params: {
   }
 
   if (mode === "scheduler" || mode === "all") {
-    startCronScheduler(tasksDir);
+    startCronScheduler(tasksDir, defaultsPath ? { defaultsPath } : undefined);
   }
 
   if (mode === "bot" || mode === "all") {
     const { buildChannelTaskMap, startDiscordListener } = await import("./discord/index.js");
-    const channelTaskMap = buildChannelTaskMap(tasksDir);
+    const channelTaskMap = buildChannelTaskMap(
+      tasksDir,
+      defaultsPath ? { defaultsPath } : undefined,
+    );
     if (channelTaskMap.size === 0) {
       log.warn(
         "No tasks have a discord_channel_id configured. Bot will run but ignore all messages.",

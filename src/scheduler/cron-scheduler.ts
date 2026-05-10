@@ -5,12 +5,13 @@ import { run } from "@/runner";
 
 const log = logger.withContext("cron-scheduler");
 
-export function startCronScheduler(tasksDir: string): void {
-  const scheduledTasks = loadTasksFromDirectory(tasksDir)
+export function startCronScheduler(tasksDir: string, options?: StartCronSchedulerOptions): void {
+  const scheduledTasks = loadTasksFromDirectory(tasksDir, options)
     .filter(({ task }) => task.cron != null)
-    .map(({ task, taskPath }) => ({
+    .map(({ task, taskPath, defaultsPath }) => ({
       taskName: task.task_name,
       taskPath,
+      defaultsPath,
       cron: task.cron as string,
     }));
 
@@ -41,7 +42,10 @@ export function startCronScheduler(tasksDir: string): void {
 
       inFlightTasks.add(task.taskPath);
 
-      void run({ taskPath: task.taskPath })
+      void run({
+        taskPath: task.taskPath,
+        ...(task.defaultsPath ? { defaultsPath: task.defaultsPath } : {}),
+      })
         .then(() => {
           log.info("Cron task finished.", { taskName: task.taskName, taskPath: task.taskPath });
         })
@@ -58,3 +62,7 @@ export function startCronScheduler(tasksDir: string): void {
     });
   }
 }
+
+type StartCronSchedulerOptions = {
+  defaultsPath?: string;
+};

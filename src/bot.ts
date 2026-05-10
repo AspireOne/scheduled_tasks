@@ -5,10 +5,11 @@ process.loadEnvFile();
 const log = logger.withContext("bot");
 
 async function main() {
-  const { tasksDir } = parseServerCliArgs(process.argv, "bot");
+  const { tasksDir, defaultsPath } = parseServerCliArgs(process.argv, "bot");
 
   await startServerRuntime({
     tasksDir,
+    ...(defaultsPath ? { defaultsPath } : {}),
     mode: "bot",
     logContext: "bot",
     startMessage: "==================== Bot started ====================",

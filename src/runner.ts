@@ -10,7 +10,7 @@ import {
   validateMemoriesEnvOrThrow,
 } from "./shared/env";
 import { logger } from "./shared/logger";
-import { loadTaskFromFile } from "./task";
+import { isTaskDefaultsPath, loadTaskFromFile, resolveTaskDefaultsPath } from "./task";
 import type { Task } from "./task/task.type";
 
 const log = logger.withContext("runner");
@@ -22,10 +22,18 @@ export type RunArgs = {
 };
 
 export async function run(args: RunArgs) {
-  const task = args.defaultsPath
-    ? loadTaskFromFile(args.taskPath, { defaultsPath: args.defaultsPath })
-    : loadTaskFromFile(args.taskPath);
+  if (isTaskDefaultsPath(args.taskPath)) {
+    throw new Error(`Defaults file is not a runnable task: ${path.resolve(args.taskPath)}`);
+  }
+
   const taskDirectory = path.dirname(path.resolve(args.taskPath));
+  const defaultsPath = resolveTaskDefaultsPath({
+    tasksDir: taskDirectory,
+    ...(args.defaultsPath ? { defaultsPath: args.defaultsPath } : {}),
+  });
+  const task = defaultsPath
+    ? loadTaskFromFile(args.taskPath, { defaultsPath })
+    : loadTaskFromFile(args.taskPath);
   log.info("Task loaded:", task.task_name);
   log.debug("Task:", task);
 

@@ -5,10 +5,11 @@ process.loadEnvFile();
 const log = logger.withContext("server");
 
 async function main() {
-  const { tasksDir, mode } = parseServerCliArgs(process.argv, "all");
+  const { tasksDir, defaultsPath, mode } = parseServerCliArgs(process.argv, "all");
 
   await startServerRuntime({
     tasksDir,
+    ...(defaultsPath ? { defaultsPath } : {}),
     mode,
     logContext: "server",
     startMessage: "==================== Server started ====================",

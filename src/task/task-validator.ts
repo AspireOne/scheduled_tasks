@@ -44,12 +44,27 @@ const validationRules: Record<keyof Task, RuleProperties> = {
   discord_channel_id: {},
 };
 
-export function validateTask(task: Task): Result {
+type TaskValidationInput = Partial<Task>;
+
+export function validateTask(task: TaskValidationInput): Result {
+  return validateTaskWithOptions(task, { requireRequiredFields: true });
+}
+
+export function validateTaskDefaults(task: TaskValidationInput): Result {
+  return validateTaskWithOptions(task, { requireRequiredFields: false });
+}
+
+function validateTaskWithOptions(
+  task: TaskValidationInput,
+  options: { requireRequiredFields: boolean },
+): Result {
   const warnings: string[] = [];
   const errors: string[] = [];
 
-  validateRequiredFieldsPresence(task, errors);
-  if (errors.length !== 0) return { success: false, errors, warnings };
+  if (options.requireRequiredFields) {
+    validateRequiredFieldsPresence(task, errors);
+    if (errors.length !== 0) return { success: false, errors, warnings };
+  }
 
   validateValues(task, errors, warnings);
   validateLengthConstraints(task, errors);
@@ -61,23 +76,30 @@ export function validateTask(task: Task): Result {
   return { success, errors, warnings };
 }
 
-function validateValues(task: Task, errors: string[], warnings: string[]) {
-  const notificationChannelsAreValid = task.notification_channels.every((channel) =>
-    taskValues.notificationChannels.includes(channel),
-  );
-  const toolNamesAreValid = task.tool_names.every((toolName) =>
-    taskValues.toolNames.includes(toolName),
-  );
-  const effortIsValid = taskValues.efforts.includes(task.effort);
-  const modelIsKnown = (taskValues.models as readonly string[]).includes(task.model);
+function validateValues(task: TaskValidationInput, errors: string[], warnings: string[]) {
+  const notificationChannelsAreValid =
+    task.notification_channels == null ||
+    (Array.isArray(task.notification_channels) &&
+      task.notification_channels.every((channel) =>
+        taskValues.notificationChannels.includes(channel),
+      ));
+  const toolNamesAreValid =
+    task.tool_names == null ||
+    (Array.isArray(task.tool_names) &&
+      task.tool_names.every((toolName) => taskValues.toolNames.includes(toolName)));
+  const effortIsValid = task.effort == null || taskValues.efforts.includes(task.effort);
+  const modelIsKnown =
+    task.model == null || (taskValues.models as readonly string[]).includes(task.model);
 
   if (!notificationChannelsAreValid) errors.push("invalid notification channel(s)");
   if (!toolNamesAreValid) errors.push("invalid tool name(s)");
   if (!effortIsValid) errors.push("invalid effort");
-  if (!modelIsKnown) warnings.push(`Model ${task.model} is not known. Make sure it is correct.`);
+  if (task.model != null && !modelIsKnown) {
+    warnings.push(`Model ${task.model} is not known. Make sure it is correct.`);
+  }
 }
 
-function validateRequiredFieldsPresence(task: Task, errors: string[]): void {
+function validateRequiredFieldsPresence(task: TaskValidationInput, errors: string[]): void {
   const requiredFields = Object.entries(validationRules)
     .filter(([, rule]) => rule.required)
     .map(([key]) => [key, task[key as keyof Task]] as const);
@@ -91,7 +113,7 @@ function validateRequiredFieldsPresence(task: Task, errors: string[]): void {
   }
 }
 
-function validateLengthConstraints(task: Task, errors: string[]): void {
+function validateLengthConstraints(task: TaskValidationInput, errors: string[]): void {
   for (const [key, rule] of Object.entries(validationRules)) {
     const value = task[key as keyof Task];
     if (value == null) continue;
@@ -110,7 +132,7 @@ function validateLengthConstraints(task: Task, errors: string[]): void {
   }
 }
 
-function validateNotificationConfig(task: Task, errors: string[]): void {
+function validateNotificationConfig(task: TaskValidationInput, errors: string[]): void {
   if (task.notifications == null) return;
   if (!isPlainObject(task.notifications)) {
     errors.push("notifications must be a table/object");
@@ -134,15 +156,15 @@ function validateNotificationConfig(task: Task, errors: string[]): void {
   }
 }
 
-function validateDiscordChannelId(task: Task, errors: string[]): void {
-  if (!task.notification_channels.includes("discord")) return;
+function validateDiscordChannelId(task: TaskValidationInput, errors: string[]): void {
+  if (!task.notification_channels?.includes("discord")) return;
 
   if (!task.discord_channel_id || task.discord_channel_id.length === 0) {
     errors.push('discord_channel_id is required when "discord" is in notification_channels');
   }
 }
 
-function validateCron(task: Task, errors: string[]): void {
+function validateCron(task: TaskValidationInput, errors: string[]): void {
   if (task.cron == null) return;
 
   if (typeof task.cron !== "string") {

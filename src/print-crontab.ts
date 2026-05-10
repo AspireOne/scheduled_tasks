@@ -4,17 +4,20 @@ import { loadTasksFromDirectory } from "./task";
 import { setGlobalLogLevel } from "./shared/logger";
 
 function main() {
-  const { tasksDir } = parseServerCliArgs(process.argv, "scheduler");
+  const { tasksDir, defaultsPath } = parseServerCliArgs(process.argv, "scheduler");
   const runTaskScriptPath = path.resolve(__dirname, "..", "run-task.sh");
   setGlobalLogLevel("WARN");
 
-  const cronLines = loadTasksFromDirectory(tasksDir)
+  const cronLines = loadTasksFromDirectory(tasksDir, defaultsPath ? { defaultsPath } : undefined)
     .filter(({ task }) => task.cron != null)
     .sort((a, b) => a.taskPath.localeCompare(b.taskPath))
-    .map(({ task, taskPath }) => {
+    .map(({ task, taskPath, defaultsPath: resolvedDefaultsPath }) => {
       const cron = task.cron as string;
       const absoluteTaskPath = path.resolve(taskPath);
-      return `${cron} ${shellEscape(runTaskScriptPath)} ${shellEscape(absoluteTaskPath)}`;
+      const command = `${cron} ${shellEscape(runTaskScriptPath)} ${shellEscape(absoluteTaskPath)}`;
+      return resolvedDefaultsPath
+        ? `${command} ${shellEscape(path.resolve(resolvedDefaultsPath))}`
+        : command;
     });
 
   for (const line of cronLines) {

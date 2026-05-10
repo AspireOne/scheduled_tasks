@@ -27,6 +27,7 @@ async function main() {
       : runArgsBase;
     await run(runArgs);
   } catch (err) {
+    process.exitCode = 1;
     log.error(err);
   }
 

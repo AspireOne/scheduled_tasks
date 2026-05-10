@@ -5,10 +5,11 @@ process.loadEnvFile();
 const log = logger.withContext("scheduler");
 
 async function main() {
-  const { tasksDir } = parseServerCliArgs(process.argv, "scheduler");
+  const { tasksDir, defaultsPath } = parseServerCliArgs(process.argv, "scheduler");
 
   await startServerRuntime({
     tasksDir,
+    ...(defaultsPath ? { defaultsPath } : {}),
     mode: "scheduler",
     logContext: "scheduler",
     startMessage: "==================== Scheduler started ====================",

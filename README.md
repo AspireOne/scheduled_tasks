@@ -101,7 +101,8 @@ pnpm dlx tsx src/index.ts --task-path .tasks/my-task.toml --defaults .tasks/defa
 
 Defaults files use the same TOML format as task files. Values from the task file always win, and
 missing task values are filled from the defaults file. Nested tables are deep-merged, while arrays
-replace the default array instead of concatenating with it.
+replace the default array instead of concatenating with it. If `.tasks/defaults.toml` exists, it is
+used automatically for tasks in `.tasks`; pass `--defaults` to use a different defaults file.
 
 ## Recommended Commands
 
@@ -120,12 +121,14 @@ To print crontab entries for all cron-enabled tasks in a directory:
 
 ```bash
 pnpm dlx tsx src/print-crontab.ts --tasks-dir .tasks
+pnpm dlx tsx src/print-crontab.ts --tasks-dir .tasks --defaults .tasks/defaults.toml
 pnpm print-crontab:dev --tasks-dir .tasks
 ```
 
 Each output line contains the task cron expression, the absolute path to `run-task.sh`, and the
-absolute path to the task TOML file. You can redirect the output into a crontab workflow if you
-want to manage scheduling outside the built-in scheduler.
+absolute path to the task TOML file. If defaults are active, the defaults file path is emitted as a
+second `run-task.sh` argument. You can redirect the output into a crontab workflow if you want to
+manage scheduling outside the built-in scheduler.
 
 ## Long-Running Modes
 
@@ -149,6 +152,7 @@ node dist/server.js                             # scheduler + bot, production
 node dist/server.js --mode scheduler            # explicit scheduler-only mode
 node dist/server.js --mode bot                  # explicit bot-only mode
 node dist/server.js --tasks-dir ./other-tasks   # custom tasks dir (default .tasks)
+node dist/server.js --defaults ./defaults.toml  # custom defaults file
 ```
 
 `src/scheduler.ts` and `src/bot.ts` are just thin dedicated entrypoints. `src/server.ts` is the combined entrypoint and defaults to `--mode all`.
