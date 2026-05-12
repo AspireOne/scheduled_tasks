@@ -5,7 +5,7 @@ import type {
   ResponseFunctionToolCall,
   ResponseInputItem,
 } from "openai/resources/responses/responses.js";
-import { augmentWithCurrentDate, getPromptCacheRetention } from "./helpers";
+import { augmentSystemPromptWithMetadata, getPromptCacheRetention } from "./helpers";
 import { openai } from "./openai-client";
 import type { BuiltTools } from "./tools";
 
@@ -19,9 +19,7 @@ export async function runTaskResponse(props: {
   prompt?: string | undefined;
   previousResponseId?: string | undefined;
 }): Promise<Response> {
-  const instructions = props.task.system_prompt
-    ? augmentWithCurrentDate(props.task.system_prompt)
-    : null;
+  const instructions = augmentSystemPromptWithMetadata(props.task.system_prompt || "");
 
   let previousResponseId: string | undefined = props.previousResponseId;
   let input: string | ResponseInputItem[] = props.prompt ?? props.task.prompt;

@@ -1,13 +1,18 @@
 import type { ResponseCreateParamsBase } from "openai/resources/responses/responses.js";
 
-export function augmentWithCurrentDate(prompt: string) {
+/*  Currently only adds current time */
+export function augmentSystemPromptWithMetadata(prompt: string) {
   const currentTime = new Date().toLocaleDateString("cs-CZ", {
     weekday: "long",
     day: "numeric",
     month: "short",
     year: "numeric",
   });
-  return `${prompt}\n\n\nDnes je ${currentTime}`;
+
+  const prefix = `\n\n---\n\nMetadata:\n`;
+  const data = `Datetime: ${currentTime}.`;
+
+  return prompt ? `${prompt}${prefix}${data}.` : `Datetime: ${currentTime}.`;
 }
 
 export function getPromptCacheRetention(
