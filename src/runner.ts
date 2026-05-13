@@ -2,6 +2,7 @@ import * as path from "node:path";
 import { runTaskResponse } from "./ai/response-runner";
 import { buildTools } from "./ai/tools";
 import { getResponseId, upsertResponseId } from "./conversations";
+import { renderDiscordResponse } from "./discord/render-response";
 import { getDefaultNotificationLogFilePath } from "./notifications/log-notifier";
 import { sendNotifications } from "./notifications";
 import {
@@ -90,6 +91,12 @@ async function executeAndNotify(props: {
   }
 
   log.time("notifications");
+  const discordContent = renderDiscordResponse(response);
+  const payload = {
+    taskName: task.task_name,
+    content: response.output_text,
+    ...(discordContent.trim().length > 0 ? { discordContent } : {}),
+  };
   await sendNotifications({
     channels: task.notification_channels,
     discordChannelId: task.discord_channel_id,
@@ -98,10 +105,7 @@ async function executeAndNotify(props: {
       taskName: task.task_name,
       configuredPath: task.notifications?.log?.file_path,
     }),
-    payload: {
-      taskName: task.task_name,
-      content: response.output_text,
-    },
+    payload,
   });
   log.timeEnd("notifications");
 }

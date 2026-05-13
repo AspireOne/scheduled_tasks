@@ -5,6 +5,7 @@ import { chunkDiscordMessage, DISCORD_MESSAGE_LIMIT } from "./message-chunker";
 const log = logger.withContext("discord-post-message");
 
 const DISCORD_API_BASE = "https://discord.com/api/v10";
+const DISCORD_MESSAGE_FLAG_SUPPRESS_EMBEDS = 1 << 2;
 
 type PostMessageParams = {
   channelId: string;
@@ -23,7 +24,10 @@ export async function postDiscordMessage(params: PostMessageParams): Promise<voi
         "Content-Type": "application/json",
         Authorization: `Bot ${token}`,
       },
-      body: JSON.stringify({ content: message }),
+      body: JSON.stringify({
+        content: message,
+        flags: DISCORD_MESSAGE_FLAG_SUPPRESS_EMBEDS,
+      }),
     });
 
     if (!response.ok) {

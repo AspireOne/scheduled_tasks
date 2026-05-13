@@ -5,6 +5,7 @@ import { sendLogNotification } from "./log-notifier";
 type NotificationPayload = {
   taskName: string;
   content: string;
+  discordContent?: string;
 };
 
 export async function sendNotifications(params: {
@@ -19,7 +20,7 @@ export async function sendNotifications(params: {
         await postDiscordMessage({
           channelId: params.discordChannelId!,
           taskName: params.payload.taskName,
-          content: params.payload.content,
+          content: params.payload.discordContent ?? params.payload.content,
         });
         break;
       case "log":
