@@ -1,4 +1,4 @@
-export const DISCORD_MESSAGE_LIMIT = 1_800;
+export const DISCORD_MESSAGE_LIMIT = 1_900;
 
 export function chunkDiscordMessage(content: string): string[] {
   if (content.length === 0) return [];
