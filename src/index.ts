@@ -1,38 +1,53 @@
-import { globalConfig } from "./config";
-import { run, type RunArgs } from "./runner";
+import { buildRunHelpText, CliUsageError, printHelp, printVersion } from "./shared/cli";
 import { parseCliArgs, validateCliArgsOrThrow } from "./shared/cli-parser";
-import { validateOpenAIEnvOrThrow } from "./shared/env";
-import { logger, pruneLogFile } from "./shared/logger";
 
 process.loadEnvFile();
-const log = logger.withContext("index");
 
 async function main() {
-  pruneLogFile(globalConfig.maxLogLines);
-  log.info("==================== Run started ====================");
-  log.time("run");
-
   try {
+    const cliArgs = parseCliArgs(process.argv);
+    if (cliArgs.help) {
+      printHelp(buildRunHelpText());
+      return;
+    }
+    if (cliArgs.version) {
+      printVersion();
+      return;
+    }
+
+    validateCliArgsOrThrow(cliArgs);
+    const [{ globalConfig }, { run }, { validateOpenAIEnvOrThrow }, { logger, pruneLogFile }] =
+      await Promise.all([
+        import("./config.js"),
+        import("./runner.js"),
+        import("./shared/env.js"),
+        import("./shared/logger.js"),
+      ]);
+    const log = logger.withContext("index");
+    pruneLogFile(globalConfig.maxLogLines);
+    log.info("==================== Run started ====================");
+    log.time("run");
+    log.debug("CLI args:", JSON.stringify(cliArgs));
     validateOpenAIEnvOrThrow();
 
-    const cliArgs = parseCliArgs(process.argv);
-    log.debug("CLI args:", JSON.stringify(cliArgs));
-    validateCliArgsOrThrow(cliArgs);
-
-    const runArgsBase: RunArgs = cliArgs.defaultsPath
+    const runArgsBase = cliArgs.defaultsPath
       ? { taskPath: cliArgs.taskPath, defaultsPath: cliArgs.defaultsPath }
       : { taskPath: cliArgs.taskPath };
-    const runArgs: RunArgs = cliArgs.continue
+    const runArgs = cliArgs.continue
       ? { ...runArgsBase, continue: { message: cliArgs.message } }
       : runArgsBase;
     await run(runArgs);
+    log.timeEnd("run");
+    log.info("==================== Run ended ====================\n\n\n");
   } catch (err) {
-    process.exitCode = 1;
-    log.error(err);
+    process.exitCode = err instanceof CliUsageError ? err.exitCode : 1;
+    if (err instanceof CliUsageError) {
+      process.stderr.write(`${err.message}\n`);
+      return;
+    }
+    const { logger } = await import("./shared/logger.js");
+    logger.withContext("index").error(err);
   }
-
-  log.timeEnd("run");
-  log.info("==================== Run ended ====================\n\n\n");
 }
 
 // TODO: Do we need to await?

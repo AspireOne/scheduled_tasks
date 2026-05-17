@@ -1,40 +1,8 @@
-import { parseArgs } from "node:util";
 import { globalConfig } from "./config";
 import { startCronScheduler } from "./scheduler/index.js";
 import { validateDiscordEnvOrThrow, validateOpenAIEnvOrThrow } from "./shared/env";
 import { logger, pruneLogFile } from "./shared/logger";
-
-export type ServerMode = "bot" | "scheduler" | "all";
-
-export function parseServerCliArgs(
-  args: string[],
-  defaultMode: ServerMode,
-): {
-  tasksDir: string;
-  defaultsPath: string | undefined;
-  mode: ServerMode;
-} {
-  const { values } = parseArgs({
-    args: args.slice(2),
-    options: {
-      tasks: { type: "string", default: globalConfig.defaultTasksDir },
-      defaults: { type: "string" },
-      mode: { type: "string", default: defaultMode },
-    },
-    allowPositionals: false,
-  });
-
-  const mode = values.mode;
-  if (mode !== "bot" && mode !== "scheduler" && mode !== "all") {
-    throw new Error(`Invalid mode "${mode}". Expected one of: bot, scheduler, all.`);
-  }
-
-  return {
-    tasksDir: values.tasks,
-    defaultsPath: values.defaults,
-    mode,
-  };
-}
+import type { ServerMode } from "./shared/server-cli";
 
 export async function startServerRuntime(params: {
   tasksDir: string;

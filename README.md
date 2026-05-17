@@ -92,6 +92,7 @@ node dist/index.js --task .tasks/social-events-research.toml
 ```
 
 `-t` also works as a short form of `--task`.
+You can also pass the task file positionally, for example `pnpm dlx tsx src/index.ts .tasks/my-task.toml`.
 
 You can also pass a default task config:
 
@@ -103,6 +104,8 @@ Defaults files use the same TOML format as task files. Values from the task file
 missing task values are filled from the defaults file. Nested tables are deep-merged, while arrays
 replace the default array instead of concatenating with it. If `.tasks/defaults.toml` exists, it is
 used automatically for tasks in `.tasks`; pass `--defaults` to use a different defaults file.
+
+Every CLI entrypoint supports `-h` / `--help` and `-V` / `--version`.
 
 ## Recommended Commands
 

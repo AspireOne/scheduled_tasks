@@ -1,10 +1,30 @@
 import path from "node:path";
-import { parseServerCliArgs } from "./server-runtime";
+import { parseServerCliArgs } from "./shared/server-cli";
+import { buildServerHelpText, CliUsageError, printHelp, printVersion } from "./shared/cli";
 import { loadTasksFromDirectory } from "./task";
 import { setGlobalLogLevel } from "./shared/logger";
 
 function main() {
-  const { tasksDir, defaultsPath } = parseServerCliArgs(process.argv, "scheduler");
+  const { tasksDir, defaultsPath, help, version } = parseServerCliArgs(process.argv, "scheduler");
+  if (help) {
+    printHelp(
+      buildServerHelpText({
+        command: "print-crontab",
+        usage: "tsx src/print-crontab.ts [options]",
+        description: "Print crontab entries for all cron-enabled tasks in a directory.",
+        includeMode: false,
+        examples: [
+          "pnpm dlx tsx src/print-crontab.ts --tasks tasks-examples",
+          "pnpm dlx tsx src/print-crontab.ts --tasks tasks-examples --defaults ./defaults.toml",
+        ],
+      }),
+    );
+    return;
+  }
+  if (version) {
+    printVersion();
+    return;
+  }
   const runTaskScriptPath = path.resolve(__dirname, "..", "run-task.sh");
   setGlobalLogLevel("WARN");
 
@@ -33,4 +53,12 @@ function shellEscape(value: string): string {
   return `'${value.replaceAll("'", `'"'"'`)}'`;
 }
 
-main();
+try {
+  main();
+} catch (err) {
+  if (err instanceof CliUsageError) {
+    process.stderr.write(`${err.message}\n`);
+    process.exit(err.exitCode);
+  }
+  throw err;
+}
