@@ -120,9 +120,9 @@ Use `src/scheduler.ts` for cron only, `src/bot.ts` for Discord only, and `src/se
 To print crontab entries for all cron-enabled tasks in a directory:
 
 ```bash
-pnpm dlx tsx src/print-crontab.ts --tasks-dir .tasks
-pnpm dlx tsx src/print-crontab.ts --tasks-dir .tasks --defaults .tasks/defaults.toml
-pnpm print-crontab:dev --tasks-dir .tasks
+pnpm dlx tsx src/print-crontab.ts --tasks .tasks
+pnpm dlx tsx src/print-crontab.ts --tasks .tasks --defaults .tasks/defaults.toml
+pnpm print-crontab:dev --tasks .tasks
 ```
 
 Each output line contains the task cron expression, the absolute path to `run-task.sh`, and the
@@ -151,7 +151,7 @@ pnpm dlx tsx src/server.ts                      # scheduler + bot, development
 node dist/server.js                             # scheduler + bot, production
 node dist/server.js --mode scheduler            # explicit scheduler-only mode
 node dist/server.js --mode bot                  # explicit bot-only mode
-node dist/server.js --tasks-dir ./other-tasks   # custom tasks dir (default .tasks)
+node dist/server.js --tasks ./other-tasks       # custom tasks dir (default .tasks)
 node dist/server.js --defaults ./defaults.toml  # custom defaults file
 ```
 

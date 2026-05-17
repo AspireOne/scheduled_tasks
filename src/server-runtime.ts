@@ -17,7 +17,7 @@ export function parseServerCliArgs(
   const { values } = parseArgs({
     args: args.slice(2),
     options: {
-      "tasks-dir": { type: "string", default: globalConfig.defaultTasksDir },
+      tasks: { type: "string", default: globalConfig.defaultTasksDir },
       defaults: { type: "string" },
       mode: { type: "string", default: defaultMode },
     },
@@ -30,7 +30,7 @@ export function parseServerCliArgs(
   }
 
   return {
-    tasksDir: values["tasks-dir"],
+    tasksDir: values.tasks,
     defaultsPath: values.defaults,
     mode,
   };
