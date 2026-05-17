@@ -12,6 +12,7 @@
     "scheduler": "tsx src/scheduler.ts",
     "server": "tsx src/server.ts",
     "print-crontab": "tsx src/print-crontab.ts",
+    "run": "tsx src/index.ts",
     "start": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
