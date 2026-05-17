@@ -36,6 +36,7 @@
     "discord.js": "^14.26.4",
     "node-cron": "^4.2.1",
     "openai": "^6.35.0",
+    "picocolors": "^1.1.1",
     "smol-toml": "^1.6.1"
   }
 }
