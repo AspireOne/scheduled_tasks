@@ -18,7 +18,7 @@ It's useful for both one-off tasks (you can leverage notifications, tools like g
 ## How It Works
 
 1. You write a TOML task file.
-2. For a one-off run, you invoke the runner with `--task-path`.
+2. For a one-off run, you invoke the runner with `--task`.
 3. For recurring runs, you keep a long-running process running; the scheduler scans the task directory at boot and schedules every task with a `cron` field.
 4. When a task fires, the runner loads it, calls the OpenAI Responses API, and forwards the final output to the configured notification channels.
 
@@ -76,7 +76,7 @@ Install dependencies: `pnpm install`
 Run one task directly:
 
 ```bash
-pnpm dlx tsx src/index.ts --task-path .tasks/social-events-research.toml
+pnpm dlx tsx src/index.ts --task .tasks/social-events-research.toml
 ```
 
 Or build the project:
@@ -88,15 +88,15 @@ pnpm exec tsc
 And then:
 
 ```bash
-node dist/index.js --task-path .tasks/social-events-research.toml
+node dist/index.js --task .tasks/social-events-research.toml
 ```
 
-`-c` also works as a short form of `--task-path`.
+`-t` also works as a short form of `--task`.
 
 You can also pass a default task config:
 
 ```bash
-pnpm dlx tsx src/index.ts --task-path .tasks/my-task.toml --defaults .tasks/defaults.toml
+pnpm dlx tsx src/index.ts --task .tasks/my-task.toml --defaults .tasks/defaults.toml
 ```
 
 Defaults files use the same TOML format as task files. Values from the task file always win, and
@@ -109,7 +109,7 @@ used automatically for tasks in `.tasks`; pass `--defaults` to use a different d
 For day-to-day local use with `tsx`:
 
 ```bash
-pnpm dlx tsx src/index.ts --task-path .tasks/my-task.toml
+pnpm dlx tsx src/index.ts --task .tasks/my-task.toml
 pnpm dlx tsx src/scheduler.ts
 pnpm dlx tsx src/bot.ts
 pnpm dlx tsx src/server.ts
@@ -191,7 +191,7 @@ minute (0-59)
 You can also continue a conversation from the CLI:
 
 ```bash
-node dist/index.js --task-path .tasks/weekly-review.toml --continue -m "your reply"
+node dist/index.js --task .tasks/weekly-review.toml --continue -m "your reply"
 ```
 
 ## Dev Notes
